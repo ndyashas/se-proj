@@ -23,19 +23,6 @@ import random
 
 # for redirecting to home page
 
-def about(request):
-	try:
-		return render(request, 'onlinetest/about.html')
-	except:
-		return HttpResponse("Something went wrong")
-
-def trytest(request):
-	# try:
-		cemail = clientsTable.objects.get(email="admin@admin.com")
-		tests = testDetails.objects.filter(client_id= cemail.id)
-		return render(request, 'onlinetest/trytest.html', {'tests': tests})		
-	# except:
-		# return HttpResponse("Something went wrong")
 
 
 def index(request):

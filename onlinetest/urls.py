@@ -8,8 +8,6 @@ app_name = 'onlinetest'
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^about$', views.about, name='about'),
-    url(r'^trytest$', views.trytest, name='trytest'),
     url(r'^studentlogin$', views.studentlogin, name='studentlogin'),
     url(r'^clientlogin$', views.clientlogin, name='clientlogin'),
     url(r'^clientloginVal$', views.clientloginVal, name='clientloginVal'),
