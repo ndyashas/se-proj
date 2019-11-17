@@ -44,6 +44,7 @@
                     <form method="POST" id="formid" action="{% url 'onlinetest:paper_submit' %}">
                         {% csrf_token %}
                         <input type="text" value="0" id="finalmarks" name="totalmarks" hidden>
+			<input type="text" value="E" id="finalanswers" name="answers" hidden>
                     </form>
                     <button class="btn btn-danger" type="button" onclick="submitTest()" value="Submit Test" style="font-weight: bolder">Submit Test</button>
                 </div>
@@ -137,29 +138,38 @@
             // Marks calculation begins
             function submitTest() {
                 var marks = 0;
+				var answers = "";
                 var noOfQuestions = document.getElementById('noOfQuestions').value;
                 var x = Number(noOfQuestions);
                 for (var i = 1; i < x + 1; i++) {
                     if (document.getElementById(i + "A").checked) {
                         if (document.getElementById(i + "A").value == document.getElementById(i + "ANSWER").value)
                             marks++;
+						answers+="A";
                     }
+					
+
                     else if (document.getElementById(i + "B").checked) {
                         if (document.getElementById(i + "B").value == document.getElementById(i + "ANSWER").value)
                             marks++;
+						answers+="B";
                     }
                     else if (document.getElementById(i + "C").checked) {
                         if (document.getElementById(i + "C").value == document.getElementById(i + "ANSWER").value)
                             marks++;
+						answers+="C";
                     }
                     else if (document.getElementById(i + "D").checked) {
                         if (document.getElementById(i + "D").value == document.getElementById(i + "ANSWER").value)
                             marks++;
+						answers+="D";
                     }
-                    else { }
+                    else { answers+="E"; }
+		
                 }
                 // alert("Your Score - " + marks);
                 document.getElementById('finalmarks').value = marks;
+                document.getElementById('finalanswers').value = answers;
                 alert("Your Score is - " + marks);
                 $("#formid").submit();
             }

@@ -248,8 +248,10 @@ def paper_submit(request):
 					email=obj1.email,
 					name=obj1.name,
 					marks=addmarks.cleaned_data.get('totalmarks'),
+					answers=addmarks.cleaned_data.get('answers'),
 				)
 				p.save()
+				print(addmarks.cleaned_data.get('answers'))
 			# else:
 			#     return HttpResponse("error 1")
 		return HttpResponseRedirect(reverse('onlinetest:studentlogout'))

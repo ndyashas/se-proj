@@ -62,5 +62,7 @@ class studentMark(models.Model):
     client = models.CharField(max_length=50, default=None)
     date = models.DateTimeField(default=datetime.now, blank=True)
     
+    answers = models.CharField(max_length=120, default="E"*120)
+    
     def __str__(self):
         return self.email 
