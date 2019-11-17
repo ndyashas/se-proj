@@ -231,6 +231,23 @@ def clientadmin(request):
 		return HttpResponse("Something went wrong")
 
 
+
+
+def studentreview(request):
+	try:
+		studentid = request.session['studentuid']
+		testid = request.session['test_id']
+		user = studentMark.objects.get(pk=studentid)
+		ques = question.objects.filter(question_id=testid)
+		# ques_json = {'ques_text':ques.question, 'ques_answer':ques.answer, 'opt1':ques.option1, 'opt2':ques.option2, 'opt3':ques.option3, 'opt4':ques.option4, 'ques_id':ques.question_id }
+
+		return render(request, 'onlinetest/review.html', {'studentid':studentid, 'testid':testid, 'user':user, 'ques':ques})
+	except Exception as e:
+		print(e)
+		return HttpResponse("Something went wrong")
+
+
+
 def paper_submit(request):
 	try:
 		if request.method == 'POST':
@@ -254,8 +271,10 @@ def paper_submit(request):
 				print(addmarks.cleaned_data.get('answers'))
 			# else:
 			#     return HttpResponse("error 1")
-		return HttpResponseRedirect(reverse('onlinetest:studentlogout'))
-	except:
+		# return HttpResponseRedirect(reverse('onlinetest:studentlogout'))
+		return HttpResponseRedirect(reverse('onlinetest:studentreview'))
+	except Exception as e:
+		print(e)
 		return HttpResponse("Something went wrong")
 
 

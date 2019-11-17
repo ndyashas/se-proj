@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^studentlogout', views.studentlogout, name='studentlogout'),
     url(r'^simple_upload', views.simple_upload, name='simple_upload'),
     url(r'^paper_submit$',views.paper_submit, name='paper_submit'),
+	url(r'^studentreview$',views.studentreview, name='studentreview'),
 
     
 ]
