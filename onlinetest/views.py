@@ -306,7 +306,12 @@ def studentLogincheck(request):
 													  password=log.cleaned_data.get('password').strip())
 					request.session['studentuid'] = user.id
 					test_id = request.session.get('test_id')
-					return HttpResponseRedirect(reverse('onlinetest:yourtest'))
+					
+					try:
+						all_studentmark = studentMark.objects.get(studentid= user.id, ques_paper_id=test_id)
+						return HttpResponse("<center><h2>Test Already attempted</h2></center>")	
+					except:
+						return HttpResponseRedirect(reverse('onlinetest:yourtest'))
 				except studentProfile.DoesNotExist:
 					return HttpResponse("<center><h2>Invalid Username or Password</h2></center>")
 	except:
