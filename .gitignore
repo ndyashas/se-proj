@@ -4,4 +4,7 @@
 # Ignore db.sqlite3
 db.sqlite3
 
+# Unwanted files
+*.xlsx
+*.csv
 
