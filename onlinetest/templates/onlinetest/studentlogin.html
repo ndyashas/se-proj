@@ -7,7 +7,7 @@
             <form class="form col-md-12 center-block" method="POST" action="{% url 'onlinetest:studentReg' %}">
                 {% csrf_token %}
                 <center>
-				    <h5> Enter the unique test ID provided by your professor here </h5>
+				    <h5> Enter the unique test ID provided by your examiner here </h5>
                     <input type="text" class="form-control input-lg" name="test_id"  autofocus placeholder="Test ID" required><br>
                 </center>
                 <button class="btn btn-primary btn-lg" type="submit"><b>Start Test</b></button><br>
