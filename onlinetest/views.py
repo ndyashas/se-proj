@@ -54,7 +54,7 @@ def clientregister(request):
 
 def clientlogin(request):
 	try:
-		return render(request, 'onlinetest/clientlogin.html')
+		return render(request, 'onlinetest/clientlogin.html', {'login_message': ""})
 	except:
 		return HttpResponse("Something went wrong")
 
@@ -142,9 +142,9 @@ def clientloginVal(request):
 					useremail = user.email
 					return HttpResponseRedirect(reverse('onlinetest:home'))
 				except clientsTable.DoesNotExist:
-					return HttpResponse("Wrong Username or Password")
+				        return render(request, 'onlinetest/clientlogin.html', {'login_message': "Wrong username or password"})
 	except:
-		return HttpResponse("Something went wrong")
+		return render(request, 'onlinetest/clientlogin.html', {'login_message': "Wrong username or password"})
 
 # for client registration and redirecting to admin panel
 
@@ -223,7 +223,7 @@ def deletetest(request, test_id):
 def clientadmin(request):
 	try:
 		if not request.user.is_authenticated():
-			return render(request, 'onlinetest/clientlogin.html')
+			return render(request, 'onlinetest/clientlogin.html', {'login_message':""})
 		else:
 			tests = Test.objects.filter(user=request.user)
 			return render(request, 'onlinetest/clientadmin.html', {'tests': tests})
@@ -315,7 +315,7 @@ def studentReg(request):
 				request.session['test_id'] = test_id
 			except testDetails.DoesNotExist:
 				return HttpResponse("Invalid test ID")
-			return render(request, 'onlinetest/studenthome.html', {'testid': testfile_id})
+			return render(request, 'onlinetest/studenthome.html', {'login_message':"", 'testid': testfile_id})
 	except:
 		return HttpResponse("Something went wrong")
 
