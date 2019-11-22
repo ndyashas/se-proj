@@ -183,7 +183,7 @@ def simple_upload(request):
 			ext = myfile.name[myfile.name.rfind('.'):]
 			fs = FileSystemStorage()
 			filename = fs.save(now + ext, myfile)
-			onlinetest.file_reader.file_to_db(
+			re_answers = onlinetest.file_reader.file_to_db(
 				filename, str(request.session['user_id']), now)
 			uploaded_file_url = fs.url(filename)
 			# count1 = question.objects.filter(question_id=now)
@@ -192,6 +192,7 @@ def simple_upload(request):
 				client_id=str(request.session['user_id']).strip(),
 				testtitle=form.cleaned_data.get('testtitle').strip(),
 				testduration=form.cleaned_data.get('testduration').strip(),
+				re_answers=re_answers,
 				# noOfQuestions = abc,
 			)
 			p.save()
@@ -242,7 +243,8 @@ def studentreview(request):
 		
 		user = studentMark.objects.filter(studentid=studentid).filter(ques_paper_id=testid)[0]
 		answers = user.answers
-		re_answers = user.re_answers
+		# re_answers = user.re_answers
+		re_answers = testDetails.objects.filter(test_id=testid)[0].re_answers
 		noOfQuestions = ques.count()
 		marks = user.marks
 		return render(request, 'onlinetest/review.html', {'studentid':studentid, 'testid':testid, 'user_id':user, 'ques':ques,'answers':answers,'re_answers':re_answers,'marks':marks, 'noOfQuestions': noOfQuestions })
@@ -272,11 +274,14 @@ def paper_submit(request):
 					name=obj1.name,
 					marks=addmarks.cleaned_data.get('totalmarks'),
 					answers=addmarks.cleaned_data.get('answers'),
-					re_answers=addmarks.cleaned_data.get('re_answers'),
 				)
 				p.save()
 			else:
 			    return HttpResponse("error 1")
+		# return HttpResponseRedirect(reverse('onlinetest:studentlogout'))
+
+
+
 		return HttpResponseRedirect(reverse('onlinetest:studentreview'))
 	except Exception as e:
 		print(e)

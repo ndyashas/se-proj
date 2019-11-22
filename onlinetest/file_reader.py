@@ -16,6 +16,14 @@ def file_to_db(filename, client_name, test_id):
         write_db(data, client_name, test_id)
     else:
         print('error')
+
+    answers = ""
+    for i in data:
+        if str(i) == 'filename':
+            break
+        answers+=data[i].get(6)
+    return answers
+
     
 def read_csv(filename):
     '''read csv file'''
