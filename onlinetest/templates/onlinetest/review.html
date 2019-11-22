@@ -186,6 +186,15 @@
             	review_texts[parseInt(number)-1]=comments;
             	review_texts_string = review_texts.join("###");
             	
+                xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function(){
+                    if(this.readState == 4 && this.status == 200){
+                        console.log("Comments added to server");
+                    }
+                }
+                xhr.open("POST", "localhost:8000/add_review?comment=" + review_texts_string,true);
+                xhr.send();
+
             	// console.log(review_texts);
             }
 
