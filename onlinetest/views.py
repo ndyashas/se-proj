@@ -256,7 +256,21 @@ def studentreview(request):
 		return HttpResponse("Something went wrong")
 
 def add_review(request):
-	print(1)
+	try:
+		if request.method == 'GET':
+				comments = request.GET.get("comment",None);
+
+
+				test_id = request.session['test_id']
+				student_id = request.session['studentuid']
+				student = studentMark.objects.filter(ques_paper_id=test.test_id).filter(studentid=student_id)
+				student.update(comments= comments)
+					
+				student1 = studentMark.objects.filter(ques_paper_id=test.test_id).filter(studentid=student_id)
+				print(student1.comments)
+				
+	except Exception as e:
+		print(e)
 
 def paper_submit(request):
 	try:
