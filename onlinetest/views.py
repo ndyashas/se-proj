@@ -255,7 +255,8 @@ def studentreview(request):
 		print(e)
 		return HttpResponse("Something went wrong")
 
-
+def add_review(request):
+	print(1)
 
 def paper_submit(request):
 	try:

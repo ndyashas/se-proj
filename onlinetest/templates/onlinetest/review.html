@@ -126,7 +126,7 @@
 
 							        	<textarea id="{{forloop.counter}}review_text" class="form-control" style="font-weight: bolder" placeholder="Enter your review here" rows=4></textarea>
 
-							        	<button class="btn btn-success" id="{{forloop.counter}}save_btn" type="button" onclick="save_review()" value="Save Review" style="font-weight: bolder;margin-top: 8px;width: 100%">Save Review</button>
+							        	<button class="btn btn-success" id="{{forloop.counter}}save_btn" type="button" onclick="save_review(this.id)" value="Save Review" style="font-weight: bolder;margin-top: 8px;width: 100%">Save Review</button>
 
 							        	
 							        </div>
@@ -154,6 +154,7 @@
         </div>
         <script>
             // Timer begins
+            review_texts = []
             function startTimer(duration, display) {
                 var timer = duration, minutes, seconds;
                 setInterval(function () {
@@ -167,10 +168,7 @@
                     }
                 }, 1000);
             }
-            function display_answers(){
-            	console.log("1");
-            	
-            }
+            
 
             window.onload = function () {
                 var testduration = document.getElementById('testduration1').value;
@@ -180,6 +178,16 @@
                 //startTimer(onehour, display);
             };
             // Timer Ends
+
+            function save_review(id){
+            	number = id.split('s')[0];
+            	console.log(number)
+            	comments = document.getElementById(number+'review_text').value;
+            	review_texts[parseInt(number)-1]=comments;
+            	review_texts_string = review_texts.join("###");
+            	
+            	// console.log(review_texts);
+            }
 
             // Marks calculation begins
             function display_answers() {
