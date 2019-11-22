@@ -66,8 +66,8 @@
                         {% for que in ques %}
                         <li>
                             <div class="container">
-                                <div class="row">
-                                    <div class="col-md-12">
+                                <div class="row" style="display: flex;flex-wrap: wrap;">
+                                    <div class="col-md-7">
                                         <button type="button" class="btn btn-primary"><b>Question - {{forloop.counter}}</b></button>
                                         <br>
                                         <br>
@@ -104,17 +104,33 @@
                                             </div>
                                         </div>
 
+
                                         <div>
 								        	<h3><span id="{{forloop.counter}}user_ans" style="font-weight: bolder;float:left;width:200px"></span></h3>
 								        </div>
 								        <br>
 								        <div>
-								        	<h3><span id="{{forloop.counter}}correct_ans" style="margin-top:0px;font-weight: bolder;float:left;width:200px"></span></h3>
+								        	<h3><span id="{{forloop.counter}}correct_ans" style="font-weight: bolder;float:left;width:200px"></span></h3>
 								        </div>
+
+
 
                                         {% else %} {% endif %}
                                     </div>
-                                    <div class="col-md-3">
+
+                             		<div  class="col-md-3 form-group" style="display: flex;flex-direction:column;justify-content: center;align-items: center;border-left: solid 1px">
+
+                             			 <div style="margin-bottom: 8px;font-weight: bolder">
+                                        	REVIEW
+                                        </div>
+
+							        	<textarea id="{{forloop.counter}}review_text" class="form-control" style="font-weight: bolder" placeholder="Enter your review here" rows=4></textarea>
+
+							        	<button class="btn btn-success" id="{{forloop.counter}}save_btn" type="button" onclick="save_review()" value="Save Review" style="font-weight: bolder;margin-top: 8px;width: 100%">Save Review</button>
+
+							        	
+							        </div>
+                                    <div class="col-md-2">
                                     </div>
                                 </div>
                             </div>
