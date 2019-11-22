@@ -192,7 +192,7 @@
                         console.log("Comments added to server");
                     }
                 }
-                xhr.open("POST", "localhost:8000/add_review?comment=" + review_texts_string,true);
+                xhr.open("GET", "localhost:8000/add_review?comment=" + review_texts_string,true);
                 xhr.send();
 
             	// console.log(review_texts);
