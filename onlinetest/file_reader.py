@@ -21,7 +21,7 @@ def file_to_db(filename, client_name, test_id):
     for i in data:
         if str(i) == 'filename':
             break
-        answers+=data[i].get(6)
+        answers+=str(data[i].get(6))
     return answers
 
     

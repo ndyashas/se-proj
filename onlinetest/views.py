@@ -200,7 +200,8 @@ def simple_upload(request):
 				'uploaded_file_url': now,
 			})
 		return render(request, 'onlinetest/addtest.html', {'client_id': client})
-	except:
+	except Exception as e:
+		print(e)
 		return HttpResponse("Something went wrong")
 
 # for deleting test
@@ -276,6 +277,7 @@ def paper_submit(request):
 					answers=addmarks.cleaned_data.get('answers'),
 				)
 				p.save()
+				# print(addmarks.cleaned_data.get('answers'))
 			else:
 			    return HttpResponse("error 1")
 		# return HttpResponseRedirect(reverse('onlinetest:studentlogout'))
