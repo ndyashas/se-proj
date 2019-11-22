@@ -237,11 +237,17 @@ def studentreview(request):
 	try:
 		studentid = request.session['studentuid']
 		testid = request.session['test_id']
-		user = studentMark.objects.get(pk=studentid)
+		# user = studentMark.objects.get(pk=studentid)
 		ques = question.objects.filter(question_id=testid)
-		# ques_json = {'ques_text':ques.question, 'ques_answer':ques.answer, 'opt1':ques.option1, 'opt2':ques.option2, 'opt3':ques.option3, 'opt4':ques.option4, 'ques_id':ques.question_id }
-
-		return render(request, 'onlinetest/review.html', {'studentid':studentid, 'testid':testid, 'user':user, 'ques':ques})
+		
+		user = studentMark.objects.filter(studentid=studentid).filter(ques_paper_id=testid)[0]
+		answers = user.answers
+		re_answers = user.re_answers
+		noOfQuestions = ques.count()
+		marks = user.marks
+		return render(request, 'onlinetest/review.html', {'studentid':studentid, 'testid':testid, 'user_id':user, 'ques':ques,'answers':answers,'re_answers':re_answers,'marks':marks, 'noOfQuestions': noOfQuestions })
+		
+		# return render(request, 'onlinetest/review.html', {'studentid':studentid, 'testid':testid, 'user':user, 'ques':ques })
 	except Exception as e:
 		print(e)
 		return HttpResponse("Something went wrong")
@@ -266,12 +272,11 @@ def paper_submit(request):
 					name=obj1.name,
 					marks=addmarks.cleaned_data.get('totalmarks'),
 					answers=addmarks.cleaned_data.get('answers'),
+					re_answers=addmarks.cleaned_data.get('re_answers'),
 				)
 				p.save()
-				print(addmarks.cleaned_data.get('answers'))
-			# else:
-			#     return HttpResponse("error 1")
-		# return HttpResponseRedirect(reverse('onlinetest:studentlogout'))
+			else:
+			    return HttpResponse("error 1")
 		return HttpResponseRedirect(reverse('onlinetest:studentreview'))
 	except Exception as e:
 		print(e)

@@ -10,8 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"> {% load staticfiles %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
         crossorigin="anonymous">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600italic,700,800' rel='stylesheet'
-        type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600italic,700,800' rel='stylesheet'>
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans|Candal|Alegreya+Sans">
     <link href='https://fonts.googleapis.com/css?family=Sonsie+One' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="{% static 'onlinetest/css/style1.css' %}" type="text/css" />
@@ -40,20 +39,22 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-5">
-                    <button type="button" class="btn btn-success"><b style="text-transform: uppercase">WELCOME -  {{ user_id.name}}</b></button>
-                </div>
+                                        <h2><span class="label label-primary"><b style="text-transform: uppercase">WELCOME -  {{ user_id.name}}</b></span></h2>
+                	                </div>
                 <div class="col-md-5">
                     <form method="POST" id="formid" action="{% url 'onlinetest:paper_submit' %}">
                         {% csrf_token %}
                         <input type="text" value="0" id="finalmarks" name="totalmarks" hidden>
-			<input type="text" value="E" id="finalanswers" name="answers" hidden>
+						<input type="text" value="E" id="finalanswers" name="answers" hidden>
                     </form>
-                    <button class="btn btn-danger" type="button" onclick="submitTest()" value="Submit Test" style="font-weight: bolder">Submit Test</button>
+                    <h2><span class="label label-success" type="button" onclick="submitTest()" value="Review" style="font-weight: bolder">Review</span></h2>
                 </div>
+                
                 <div class="col-md-2">
-                    <div id="time" class="btn btn-success" style="font-weight: bolder">
+                    <div id="score" class="label label-primary" style="font-weight: bolder">Total : {{ marks }} / {{ noOfQuestions }}
                     </div>
                 </div>
+            	
             </div>
         </div>
         <br>
@@ -102,6 +103,15 @@
                                                 <!--name="option{{forloop.counter}}" - for radio button grouping-->
                                             </div>
                                         </div>
+
+                                        <div>
+								        	<input id="{{forloop.counter}}user_ans">
+								        </div>
+
+								        <div>
+								        	<input id="{{forloop.counter}}correct_ans">
+								        </div>
+
                                         {% else %} {% endif %}
                                     </div>
                                     <div class="col-md-3">
@@ -113,6 +123,18 @@
                     </ul>
                 </div>
             </div>
+
+
+	        <div>
+	        	<input type="text" value={{ answers }} id="answers_val" name="user_answers" hidden>
+	        </div>
+
+	        <div>
+	        	<input type="text" value={{ re_answers }} id="re_answers_val" name="user_answers" hidden>
+	        </div>
+
+
+
         </div>
         <script>
             // Timer begins
@@ -129,51 +151,67 @@
                     }
                 }, 1000);
             }
+            function display_answers(){
+            	console.log("1");
+            	
+            }
+
             window.onload = function () {
                 var testduration = document.getElementById('testduration1').value;
                 var onehour = testduration * 60;
                 display = document.querySelector('#time');
-                startTimer(onehour, display);
+                display_answers();
+                //startTimer(onehour, display);
             };
             // Timer Ends
 
             // Marks calculation begins
-            function submitTest() {
+            function display_answers() {
                 var marks = 0;
-				var answers = "";
+                var user_answers = document.getElementById('answers_val').value;
+                var real_answers = document.getElementById('re_answers_val').value;
+				// console.log(real_answers);
                 var noOfQuestions = document.getElementById('noOfQuestions').value;
                 var x = Number(noOfQuestions);
+                console.log("Number of questions :",noOfQuestions);
+                var j=-1;
                 for (var i = 1; i < x + 1; i++) {
-                    if (document.getElementById(i + "A").checked) {
-                        if (document.getElementById(i + "A").value == document.getElementById(i + "ANSWER").value)
-                            marks++;
-						answers+="A";
-                    }
-					
+                	j+=1;
+                	// console.log(actual_answer[j]);
+                	i_answer = user_answers[j];
+                	switch(i_answer) {
+					  case "A":
+					  	document.getElementById(i + "A").checked = true;
+					  	document.getElementById(i + "user_ans").value = "Your answer : A";
+					    // code block
+					    break;
+					  case "B":
+					  	document.getElementById(i + "B").checked = true;
+					  	document.getElementById(i + "user_ans").value = "Your answer : B";				  	
+					    // code block
+					    break;
+					  case "C":
+					  	document.getElementById(i + "C").checked = true;
+					  	document.getElementById(i + "user_ans").value = "Your answer : C";
+					    // code block
+					    break;
+					  case "D":
+					  	document.getElementById(i + "D").checked = true;
+					  	document.getElementById(i + "user_ans").value = "Your answer : D";	
+					  	break;			  	
+					  default:
+					  	document.getElementById(i + "user_ans").value = "Your answer : -";
 
-                    else if (document.getElementById(i + "B").checked) {
-                        if (document.getElementById(i + "B").value == document.getElementById(i + "ANSWER").value)
-                            marks++;
-						answers+="B";
-                    }
-                    else if (document.getElementById(i + "C").checked) {
-                        if (document.getElementById(i + "C").value == document.getElementById(i + "ANSWER").value)
-                            marks++;
-						answers+="C";
-                    }
-                    else if (document.getElementById(i + "D").checked) {
-                        if (document.getElementById(i + "D").value == document.getElementById(i + "ANSWER").value)
-                            marks++;
-						answers+="D";
-                    }
-                    else { answers+="E"; }
-		
+					    // code block
+					} 
+					document.getElementById(i + "correct_ans").value = "Correct answer : "+real_answers[j];	
+                    
                 }
                 // alert("Your Score - " + marks);
-                document.getElementById('finalmarks').value = marks;
-                document.getElementById('finalanswers').value = answers;
-                alert("Your Score is - " + marks);
-                $("#formid").submit();
+                //document.getElementById('finalmarks').value = marks;
+                //1document.getElementById('finalanswers').value = answers;
+                //alert("Your Score is - " + marks);
+                //$("#formid").submit();
             }
         // Marks calculations Ends
         </script>
