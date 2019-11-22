@@ -47,14 +47,15 @@
                         <input type="text" value="0" id="finalmarks" name="totalmarks" hidden>
 						<input type="text" value="E" id="finalanswers" name="answers" hidden>
                     </form>
-                    <h2><span class="label label-danger" type="button" onclick="submitTest()" value="Review" style="font-weight: bolder">Review</span></h2>
+                    <h2><span class="label label-danger" type="button" value="Review" style="font-weight: bolder">Review</span></h2>
                 </div>
                 
-                <div class="col-md-2" style="right:50px">
+                <div class="col-md-2" style="right:5%">
                     <h2><span id="score" class="label label-primary" style="font-weight: bolder">Total : {{ marks }} / {{ noOfQuestions }}
                     </span></h2>
                 </div>
             	
+
             </div>
         </div>
         <br>
@@ -137,8 +138,18 @@
                         </li>
                         {% endfor %}
                     </ul>
+
                 </div>
             </div>
+
+	        <div style="left:79%;bottom: 80px;" class="col-md-2" >
+	            <h2><form method="POST" action="{% url 'onlinetest:studentlogout' %}">
+	            	{% csrf_token %}
+	            	<button id="logout" class="label label-danger btn-md" type="submit" style="font-weight: bolder" >End Review
+	            </button>
+	        	</form>
+	        </h2>
+	        </div>
 
 
 	        <div>
@@ -154,7 +165,7 @@
         </div>
         <script>
             // Timer begins
-            review_texts = []
+            review_texts = [""]
             function startTimer(duration, display) {
                 var timer = duration, minutes, seconds;
                 setInterval(function () {
@@ -184,15 +195,21 @@
             	console.log(number)
             	comments = document.getElementById(number+'review_text').value;
             	review_texts[parseInt(number)-1]=comments;
-            	review_texts_string = review_texts.join("###");
-            	
+            	review_texts_string = review_texts.join("___");
+            	// review_texts_string = "___";
+            	console.log("inside save_review ",review_texts_string);
                 xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function(){
-                    if(this.readState == 4 && this.status == 200){
+                    if(this.readyState == 4 && this.status == 200){
                         console.log("Comments added to server");
                     }
                 }
-                xhr.open("GET", "localhost:8000/add_review?comment=" + review_texts_string,true);
+
+                xhr.onerror = function(e){
+                	console.log(e);
+                }
+                xhr.open("GET", "http://0.0.0.0:8000/add_review?comment=" + review_texts_string,true);
+                // xhr.open("GET", "http://0.0.0.0:8000/add_review",true);
                 xhr.send();
 
             	// console.log(review_texts);

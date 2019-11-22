@@ -256,6 +256,7 @@ def studentreview(request):
 		return HttpResponse("Something went wrong")
 
 def add_review(request):
+	print("inside add_review, comments : ",request.GET.get("comment"))
 	try:
 		if request.method == 'GET':
 				comments = request.GET.get("comment",None);
@@ -263,14 +264,17 @@ def add_review(request):
 
 				test_id = request.session['test_id']
 				student_id = request.session['studentuid']
-				student = studentMark.objects.filter(ques_paper_id=test.test_id).filter(studentid=student_id)
-				student.update(comments= comments)
-					
-				student1 = studentMark.objects.filter(ques_paper_id=test.test_id).filter(studentid=student_id)
+				student = studentMark.objects.filter(ques_paper_id=test_id).filter(studentid=student_id)[0]
+				student.comments= comments
+				student.save()
+
+				student1 = studentMark.objects.filter(ques_paper_id=test_id).filter(studentid=student_id)[0]
 				print(student1.comments)
-				
+
+		return HttpResponse("Comments added succesfully")
 	except Exception as e:
 		print(e)
+		return HttpResponse("Comments failed")
 
 def paper_submit(request):
 	try:
