@@ -152,7 +152,9 @@
 
 	        <div style="left:79%;bottom: 80px;" class="col-md-2" >
 	            <h2><form method="POST" action="{% url 'onlinetest:update_scores' %}">
-	            	{% csrf_token %}
+                    {% csrf_token %}
+                    <input id="corrected_ans" type="text" name="corrected_ans" hidden></input>
+                    <input id="test_id" type="text" name="test_id" hidden>{{testid}}</input>
 	            	<button id="logout" class="label label-danger btn-md" type="submit" style="font-weight: bolder" >End Review
 	            </button>
 	        	</form>
@@ -208,6 +210,8 @@
             	correct_ans[parseInt(number)-1]=new_ans;
             	correct_ans_string = correct_ans.join("___");
             	// console.log(review_texts);
+                var correct_ans_box = document.getElementById("corrected_ans")
+                correct_ans_box.value = correct_ans_string
             }
 
             // Marks calculation begins
