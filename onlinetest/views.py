@@ -8,7 +8,7 @@ from django.views import generic
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .forms import clientRegisterForm, StudenLoginForm, saveMarks, TestIdVal, LoginForm, StudentRegForm, StudenLoginForm, savetestdetails
+from .forms import clientRegisterForm, StudenLoginForm, saveMarks, TestIdVal, LoginForm, StudentRegForm, StudenLoginForm, savetestdetails, getClientReview
 from django.views.decorators.csrf import csrf_protect
 # for older versoins of Django use:
 # from django.core.urlresolvers import reverse
@@ -350,7 +350,28 @@ def paper_submit(request):
 		print(e)
 		return HttpResponse("Something went wrong")
 
+def client_review(request):
+	try:
+		if request.method == 'POST':
+			info = getClientReview(request.POST)
+			print(info)
+			if info.is_valid():
+				ques_paper_id = info.cleaned_data.get('ques_paper_id').strip()
+				student_id = info.cleaned_data.get('student_id').strip()
+				
+				ques = question.objects.filter(question_id = ques_paper_id)
 
+				user = studentMark.objects.filter(studentid = student_id).filter(ques_paper_id=ques_paper_id)[0]
+				answers = user.answers
+
+				re_answers = testDetails.objects.filter(test_id=ques_paper_id)[0].re_answers
+				noOfQuestions = ques.count()
+				marks = user.marks
+				return render(request, 'onlinetest/review.html', {'studentid':student_id, 'testid':ques_paper_id, 'user_id':user, 'ques':ques,'answers':answers,'re_answers':re_answers,'marks':marks, 'noOfQuestions': noOfQuestions })
+
+	except Exception as e :
+		print(e)
+		return HttpResponse("Something went wrong")
 # for logout
 
 def clientlogout(request):

@@ -41,3 +41,8 @@ class StudentRegForm(forms.Form):
 # for validating test ID
 class TestIdVal(forms.Form):
     test_id=forms.CharField(max_length = 250)
+
+
+class getClientReview(forms.Form):
+    ques_paper_id = forms.CharField(max_length=20)
+    student_id = forms.CharField(max_length=120)

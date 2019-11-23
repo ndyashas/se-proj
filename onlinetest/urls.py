@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^paper_submit$',views.paper_submit, name='paper_submit'),
     url(r'^studentreview$',views.studentreview, name='studentreview'),
     url(r'^add_review',views.add_review, name='add_review'),
+    url(r'^client_review',views.client_review, name='client_review'),
 
 
     
