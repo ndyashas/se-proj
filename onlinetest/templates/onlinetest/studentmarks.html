@@ -55,9 +55,12 @@
                         <th>Test ID</th>
                         <th>Marks</th>
                         <th>Date/Time</th>
+                        <th> Review </th>
                     </tr>
                 </thead>
+                
                 {% for i in stuMarks %}
+                
                 <tr>
                     <td>{{ i.name }}</td>
                     <td>{{ i.email }}</td>
@@ -65,6 +68,14 @@
                     <td>{{ i.ques_paper_id }}</td>
                     <td>{{ i.marks }}</td>
                     <td>{{ i.date }}</td>
+                    <td>
+                    <form action="{% url 'onlinetest:client_review'%}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <input name="ques_paper_id" value="{{ i.ques_paper_id }}" hidden/>
+                        <input name="student_id" value="{{ i.studentid }}" hidden/>
+                        <button type="submit" class="btn btn-primary btn-xs"> Review </button>
+                    </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </table>
