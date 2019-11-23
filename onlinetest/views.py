@@ -8,7 +8,9 @@ from django.views import generic
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .forms import clientRegisterForm, StudenLoginForm, saveMarks, TestIdVal, LoginForm, StudentRegForm, StudenLoginForm, savetestdetails
+
+from .forms import clientRegisterForm, StudenLoginForm, saveMarks, TestIdVal, LoginForm, StudentRegForm, StudenLoginForm, savetestdetails, getClientReview, CommentForms
+
 from django.views.decorators.csrf import csrf_protect
 # for older versoins of Django use:
 # from django.core.urlresolvers import reverse
@@ -73,12 +75,15 @@ def clientlogin(request):
 
 
 def studentmarksAnalysis(request):
+	flag = 0
 	try:
 		uid = request.session['user_id']
 		client1 = clientsTable.objects.get(pk=uid)
 		stuMarks = studentMark.objects.filter(client=uid)
-		return render(request, 'onlinetest/studentmarks.html', {'client_id': client1, 'stuMarks': stuMarks})
-	except:
+		flag = check_if_review_needed(stuMarks)
+		return render(request, 'onlinetest/studentmarks.html', {'client_id': client1, 'stuMarks': stuMarks, 'flag': flag})
+	except Exception as e:
+		print(e)
 		return HttpResponse("Something went wrong")
 
 def studentmarksGraphAnalysis(request):
@@ -294,13 +299,14 @@ def studentreview(request):
 		testid = request.session['test_id']
 		# user = studentMark.objects.get(pk=studentid)
 		ques = question.objects.filter(question_id=testid)
-		
+		# print(testid)
 		user = studentMark.objects.filter(studentid=studentid).filter(ques_paper_id=testid)[0]
 		answers = user.answers
 		# re_answers = user.re_answers
 		re_answers = testDetails.objects.filter(test_id=testid)[0].re_answers
 		noOfQuestions = ques.count()
 		marks = user.marks
+		print(request.session)
 		return render(request, 'onlinetest/review.html', {'studentid':studentid, 'testid':testid, 'user_id':user, 'ques':ques,'answers':answers,'re_answers':re_answers,'marks':marks, 'noOfQuestions': noOfQuestions })
 		
 		# return render(request, 'onlinetest/review.html', {'studentid':studentid, 'testid':testid, 'user':user, 'ques':ques })
@@ -309,23 +315,26 @@ def studentreview(request):
 		return HttpResponse("Something went wrong")
 
 def add_review(request):
-	print("inside add_review, comments : ",request.GET.get("comment"))
-	try:
+		print("inside add_review, comments : ",request.GET.get("comment"))
+	# try:
 		if request.method == 'GET':
 				comments = request.GET.get("comment",None);
 
 
 				test_id = request.session['test_id']
 				student_id = request.session['studentuid']
-				student = studentMark.objects.filter(ques_paper_id=test_id).filter(studentid=student_id)[0]
+				student = studentMark.objects.filter(ques_paper_id=test_id).filter(studentid=student_id)[0].update(comments=comments)
+				# print(student,type(student))
 				student.comments= comments
+				# student.update(comments=comments)
 				student.save()
+				# print(test_id,"******")
 
 				student1 = studentMark.objects.filter(ques_paper_id=test_id).filter(studentid=student_id)[0]
 				print(student1.comments)
 
 		return HttpResponse("Comments added succesfully")
-	except Exception as e:
+	# except Exception as e:
 		print(e)
 		return HttpResponse("Comments failed")
 
@@ -337,6 +346,7 @@ def paper_submit(request):
 			student_id = request.session['studentuid']
 			obj = testDetails.objects.get(test_id=test_id)
 			obj1 = studentProfile.objects.get(pk=student_id)
+			# print(test_id,"*****")
 			if addmarks.is_valid():
 				p = studentMark(
 					ques_paper_id=test_id,
@@ -361,7 +371,28 @@ def paper_submit(request):
 		print(e)
 		return HttpResponse("Something went wrong")
 
+def client_review(request):
+	try:
+		if request.method == 'POST':
+			info = getClientReview(request.POST)
+			print(info)
+			if info.is_valid():
+				ques_paper_id = info.cleaned_data.get('ques_paper_id').strip()
+				student_id = info.cleaned_data.get('student_id').strip()
+				
+				ques = question.objects.filter(question_id = ques_paper_id)
 
+				user = studentMark.objects.filter(studentid = student_id).filter(ques_paper_id=ques_paper_id)[0]
+				answers = user.answers
+
+				re_answers = testDetails.objects.filter(test_id=ques_paper_id)[0].re_answers
+				noOfQuestions = ques.count()
+				marks = user.marks
+				return render(request, 'onlinetest/clientreview.html', {'studentid':student_id, 'testid':ques_paper_id, 'user_id':user, 'ques':ques,'answers':answers,'re_answers':re_answers,'marks':marks, 'noOfQuestions': noOfQuestions })
+
+	except Exception as e :
+		print(e)
+		return HttpResponse("Something went wrong")
 # for logout
 
 def clientlogout(request):
@@ -374,11 +405,25 @@ def clientlogout(request):
 
 
 def studentlogout(request):
-	try:
-		del request.session['studentuid']
-		del request.session['test_id']
+	# try:
+
+		test_id = request.session['test_id']
+		student_id = request.session['studentuid']
+
+		comment_obj = CommentForms(request.POST)
+		# print(comment_obj.get("comments"),type(comment_obj))
+		if comment_obj.is_valid():
+			print("**********",comment_obj.cleaned_data.get("comments"))
+			student = studentMark.objects.filter(ques_paper_id=test_id).filter(studentid=student_id)[0]
+			student.comments=comment_obj.cleaned_data.get("comments")
+			# print(comment_obj.get("comments"),request.session)
+			student.save()
+
+		# del request.session['studentuid']
+		# del request.session['test_id']
+
 		return HttpResponseRedirect(reverse('onlinetest:index'))
-	except:
+	# except:
 		pass
 		return HttpResponseRedirect(reverse('onlinetest:index'))
 
@@ -412,6 +457,7 @@ def studentLogincheck(request):
 					user = studentProfile.objects.get(email=log.cleaned_data.get('email').strip(),
 													  password=log.cleaned_data.get('password').strip())
 					request.session['studentuid'] = user.id
+					# print("*******************",request.session['test_id'])
 					test_id = request.session.get('test_id')
 					user.client = user.client #+";"+log.cleaned_data.get('client').strip()
 					user.save()
@@ -466,6 +512,7 @@ def yourtest(request):
 		if request.session.has_key('studentuid') and request.session.has_key('test_id'):
 			studentid = request.session['studentuid']
 			testid = request.session['test_id']
+			# print(testid,"***********")
 			try:
 				user = studentProfile.objects.get(pk=studentid)
 				ques = question.objects.filter(question_id=testid)
@@ -478,3 +525,11 @@ def yourtest(request):
 			return HttpResponseRedirect(reverse('onlinetest:studentlogin'))
 	except:
 		return HttpResponse("Something went wrong")
+
+
+def update_scores(request):
+	# try:
+	# 	if request.method == POST:
+	# 		# test_id = request.GET.get("testid")
+	# 		k = 1
+	k=1
