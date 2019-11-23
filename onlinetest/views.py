@@ -24,13 +24,18 @@ import time
 # for redirecting to home page
 
 def check_if_review_needed(stuMarks):
-	print(stuMarks)
-	comments=stuMarks.comments
-	comments=comments.split("___")
-	if len(comments)==0:
-		if comments[0]=="":
-			return 0
-	return 1
+	result = ""
+	for student in stuMarks:
+		comments = student.comments
+		comments = comments.split("___")
+		if len(comments)==0:
+			if comments[0]=="":
+				result+='0'
+			else:
+				result+='1'
+		else:
+			result+='1'
+	return result 
 
 def index(request):
 	try:
