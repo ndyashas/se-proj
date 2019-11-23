@@ -527,6 +527,7 @@ def yourtest(request):
 def update_scores(request):
 	if request.method == 'POST':
 		form_data = saveCorrectedAnswers(request.POST)
+		print(form_data)
 		if form_data.is_valid():
 
 			test_id = form_data.cleaned_data.get('test_id')
@@ -534,9 +535,11 @@ def update_scores(request):
 			# print(question_numbers,test_id)
 			# question_numbers = question_numbers.split('___')
 			new_answers = str(form_data.cleaned_data.get('corrected_answers'))
+			print("New answers : ",new_answers,test_id)
+
 			questions = question.objects.filter(question_id=test_id)
 			real_answers = questions.answer
-			print("New answers : ",new_answers)
+			
 
 			for i in range(len(real_answers)):
 				real_answers[i] = new_answers[i]
@@ -557,7 +560,9 @@ def update_scores(request):
 						marks+=1
 				all_objects[i].marks = marks
 			all_objects.save()
-			
-			return HttpResponse("This test doesn't exists anymore")
+		else:
+			return HttpResponse("FAILURE")
+
+		return HttpResponse("SUCCESS")
 
 
