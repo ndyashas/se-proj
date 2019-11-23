@@ -5,19 +5,21 @@ from datetime import datetime
 class clientsTableTest(TestCase):
 
     def setUp(Self):
-        clientsTable.objects.create(name='Vennela',
+        test_obj1 = clientsTable.objects.create(name='Vennela',
                                     email="vennela@gmail.com",
                                     contactNumber="",
-                                    pwd="vennelapassword",
-                                    date=datetime.now)
-        clientsTable.objects.create(name='alks',
+                                    pwd="vennelapassword")
+                                    #date=str(datetime.now))
+        test_obj2 = clientsTable.objects.create(name='alks',
                                     email="alka23@gmail.com",
                                     contactNumber="8543242444",
-                                    pwd="alkapassword",
-                                    date=datetime.now)
+                                    pwd="alkapassword")
+                                    #date=str(datetime.now))
+        test_obj1.save()
+        test_obj2.save()
 
     def test_returns_email(self):
-        bennelbaz = clientsTable.objects.get(name='Bennelbaz')
+        bennelbaz = clientsTable.objects.get(name='Vennela')
         alks = clientsTable.objects.get(name='alks')
 
         self.assertEqual(str(bennelbaz), "vennela@gmail.com")
