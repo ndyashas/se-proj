@@ -540,7 +540,7 @@ def update_scores(request):
 			answers = all_objects[i].answers
 			marks = 0
 			for j in range(len(answers)):
-				if(answers[j]==real_answers[j])
+				if(answers[j]==real_answers[j]):
 					marks+=1
 			all_objects[i].marks = marks
 		all_objects.save()
