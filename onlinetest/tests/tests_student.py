@@ -1,5 +1,6 @@
 from django.test import TestCase
 import datetime
+from django.utils import timezone
 from onlinetest.models import studentMark, studentProfile
 
 class testStudentModels(TestCase):
@@ -9,7 +10,7 @@ class testStudentModels(TestCase):
 				password = "pwd1",
 				rollno = "number 1",
 				client = "client1",
-				date = datetime.datetime.now())
+				date = datetime.datetime.now(tz=timezone.utc))
 		studentMark.objects.create(studentid = "st1",
 				ques_paper_id = "paper1",
 				marks = "12",
@@ -17,7 +18,7 @@ class testStudentModels(TestCase):
 				email = "fake-email@gmail.com",
 				testtitle = "test1",
 				client = "client1",
-				date = datetime.datetime.now(),
+				date = datetime.datetime.now(tz=timezone.utc),
 				answers = "12344",
 				comments = "comment1___comment2")
 

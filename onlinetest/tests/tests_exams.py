@@ -54,3 +54,57 @@ class test_testDetails(TestCase):
 
     	self.assertEqual(t1.re_answers, "AAAABBBBCCCCDDDDEEEE")
     	self.assertEqual(t2.re_answers, "AAAABBBBCCCCDDDDEEEE")
+
+
+
+
+
+class test_question(TestCase):
+
+    def setUp(Self):
+        ques_obj1 = question.objects.create( question_id='00001',
+                                             question="What is the capital of India ?",
+                                             option1="Delhi",
+                                             option2="Bengaluru",
+                                             option3="Mumbai",
+                                             option4="Chennai",
+                                             answer="1",
+                                             date=datetime.now(tz=timezone.utc))
+
+        ques_obj1 = question.objects.create( question_id='00002',
+                                             question="National Animal of India ?",
+                                             option1="Lion",
+                                             option2="King cobra",
+                                             option3="Tiger",
+                                             option4="Asian Elephant",
+                                             answer="3",
+                                             date=datetime.now(tz=timezone.utc))
+                                                
+
+    def test_testDetails_question(self):
+        q1 = question.objects.get(question_id='00001')
+        q2 = question.objects.get(question_id='00002')
+
+        self.assertEqual(str(q1), "What is the capital of India ?")
+        self.assertEqual(str(q2), "National Animal of India ?")
+
+    def test_testDetails_options(self):
+        q1 = question.objects.get(question_id='00001')
+        q2 = question.objects.get(question_id='00002')
+
+        self.assertEqual(q1.option1, "Delhi")
+        self.assertEqual(q1.option2, "Bengaluru")
+        self.assertEqual(q1.option3, "Mumbai")
+        self.assertEqual(q1.option4, "Chennai")
+
+        self.assertEqual(q2.option1, "Lion")
+        self.assertEqual(q2.option2, "King cobra")
+        self.assertEqual(q2.option3, "Tiger")
+        self.assertEqual(q2.option4, "Asian Elephant")
+
+    def test_testDetails_answer(self):
+        q1 = question.objects.get(question_id='00001')
+        q2 = question.objects.get(question_id='00002')
+
+        self.assertEqual(q1.answer, "1")
+        self.assertEqual(q2.answer, "3")
