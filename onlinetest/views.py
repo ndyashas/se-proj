@@ -68,6 +68,15 @@ def studentmarksAnalysis(request):
 	except:
 		return HttpResponse("Something went wrong")
 
+def studentmarksGraphAnalysis(request):
+	try:
+		uid = request.session['user_id']
+		client1 = clientsTable.objects.get(pk=uid)
+		tests = testDetails.objects.filter(client_id=uid)
+		return render(request, 'onlinetest/studentgraphmarks.html', {'client_id': client1, 'tests':tests})
+	except:
+		return HttpResponse("Something went wrong")
+        
 
 def addtest(request):
 	try:
