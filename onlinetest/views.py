@@ -380,7 +380,7 @@ def client_review(request):
 				re_answers = testDetails.objects.filter(test_id=ques_paper_id)[0].re_answers
 				noOfQuestions = ques.count()
 				marks = user.marks
-				return render(request, 'onlinetest/review.html', {'studentid':student_id, 'testid':ques_paper_id, 'user_id':user, 'ques':ques,'answers':answers,'re_answers':re_answers,'marks':marks, 'noOfQuestions': noOfQuestions })
+				return render(request, 'onlinetest/clientreview.html', {'studentid':student_id, 'testid':ques_paper_id, 'user_id':user, 'ques':ques,'answers':answers,'re_answers':re_answers,'marks':marks, 'noOfQuestions': noOfQuestions })
 
 	except Exception as e :
 		print(e)

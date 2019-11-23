@@ -1,0 +1,281 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title> Your Test
+    </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> {% load staticfiles %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600italic,700,800' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans|Candal|Alegreya+Sans">
+    <link href='https://fonts.googleapis.com/css?family=Sonsie+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{% static 'onlinetest/css/style1.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'onlinetest/css/imagehover.min.css' %}" type="text/css" />
+    <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="{% static 'onlinetest/js/paginathing.js' %}"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            $('.list-group').paginathing({
+                perPage: 1,
+                limitPagination: 9,
+                containerClass: ''  //panel-footer
+            })
+
+        });
+	
+
+    </script>
+
+</head>
+
+<body style="background: #00a8b3;padding-top: 60px">
+    
+    <div class="container" style="background: #fff;padding: 2em;border-radius:5px; border: 5px solid black">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                                        <h2><span class="label label-primary"><b style="text-transform: uppercase">STUDENT -  {{ user_id.name}}</b></span></h2>
+                	                </div>
+                <div class="col-md-5">
+                    <form method="POST" id="formid" action="{% url 'onlinetest:paper_submit' %}">
+                        {% csrf_token %}
+                        <input type="text" value="0" id="finalmarks" name="totalmarks" hidden>
+						<input type="text" value="E" id="finalanswers" name="answers" hidden>
+                    </form>
+                    <h2><span class="label label-danger" type="button" value="Review" style="font-weight: bolder">Review</span></h2>
+                </div>
+                
+                <div class="col-md-2" style="right:5%">
+                    <h2><span id="score" class="label label-primary" style="font-weight: bolder">Total : {{ marks }} / {{ noOfQuestions }}
+                    </span></h2>
+                </div>
+            	
+
+            </div>
+        </div>
+        <br>
+        <br>
+        <div class="container">
+            <div class="row" style="padding-top: 5px">
+                <div class="col-md-12">
+                    <ul class="list-group">
+                        {% for que in ques %}
+                        <li>
+                            <div class="container">
+                                <div class="row" style="display: flex;flex-wrap: wrap;">
+                                    <div class="col-md-7">
+                                        <button type="button" class="btn btn-primary"><b>Question - {{forloop.counter}}</b></button>
+                                        <br>
+                                        <br>
+                                        <b>  {{ que.question }} </b> {% if question.option1 != "na" %}
+                                        <div>
+                                            <label>
+                                                 <input type="radio" name="option{{forloop.counter}}" value="1" id="{{forloop.counter}}A" disabled>
+                                                     {{ que.option1 }}
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label>
+                                                <input type="radio" name="option{{forloop.counter}}" value="2" id="{{forloop.counter}}B" disabled>
+                                                    {{ que.option2 }} 
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label>
+                                                <input type="radio" name="option{{forloop.counter}}" value="3" id="{{forloop.counter}}C" disabled>
+                                                {{ que.option3 }} 
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <label>
+                                                <input type="radio" name="option{{forloop.counter}}" value="4" id="{{forloop.counter}}D" disabled>
+                                                {{ que.option4 }} 
+                                            </label>
+                                            <br>
+                                            <div>
+                                                <input type="radio" value="{{que.answer}}" id="{{forloop.counter}}ANSWER" hidden>
+                                                <input type="radio" value="{{timer.testduration}}" id="testduration1" hidden>
+                                                <input type="radio" value="{{noOfQuestions}}" id="noOfQuestions" hidden>
+                                                <!--name="option{{forloop.counter}}" - for radio button grouping-->
+                                            </div>
+                                        </div>
+
+
+                                        <div>
+								        	<h3><span id="{{forloop.counter}}user_ans" style="font-weight: bolder;float:left;width:200px"></span></h3>
+								        </div>
+								        <br>
+								        <div>
+								        	<h3><span id="{{forloop.counter}}correct_ans" style="font-weight: bolder;float:left;width:200px"></span></h3>
+								        </div>
+
+
+
+                                        {% else %} {% endif %}
+                                    </div>
+
+                             		<div  class="col-md-3 form-group" style="display: flex;flex-direction:column;justify-content: center;align-items: center;border-left: solid 1px">
+
+                             			 <div style="margin-bottom: 8px;font-weight: bolder">
+                                        	REVIEW
+                                        </div>
+
+							        	<textarea id="{{forloop.counter}}review_text" class="form-control" style="font-weight: bolder" placeholder="Enter your review here" rows=4></textarea>
+
+							        	<!-- <button class="btn btn-success" id="{{forloop.counter}}save_btn" type="button" onclick="save_review(this.id)" value="Save Review" style="font-weight: bolder;margin-top: 8px;width: 100%">Save Review</button> -->
+
+							        	
+							        </div>
+                                    <div class="col-md-2">
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                </div>
+            </div>
+
+	        <div style="left:79%;bottom: 80px;" class="col-md-2" >
+	            <h2><form method="POST" action="{% url 'onlinetest:studentlogout' %}">
+	            	{% csrf_token %}
+	            	<button id="logout" class="label label-danger btn-md" type="submit" style="font-weight: bolder" >End Review
+	            </button>
+	        	</form>
+	        </h2>
+	        </div>
+
+
+	        <div>
+	        	<input type="text" value={{ answers }} id="answers_val" name="user_answers" hidden>
+	        </div>
+
+	        <div>
+	        	<input type="text" value={{ re_answers }} id="re_answers_val" name="user_answers" hidden>
+	        </div>
+
+
+
+        </div>
+        <script>
+            // Timer begins
+            review_texts = [""]
+            function startTimer(duration, display) {
+                var timer = duration, minutes, seconds;
+                setInterval(function () {
+                    minutes = parseInt(timer / 60, 10);
+                    seconds = parseInt(timer % 60, 10);
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+                    display.textContent = minutes + ":" + seconds;
+                    if (--timer < 0) {
+                        submitTest();
+                    }
+                }, 1000);
+            }
+            
+
+            window.onload = function () {
+                var testduration = document.getElementById('testduration1').value;
+                var onehour = testduration * 60;
+                display = document.querySelector('#time');
+                display_answers();
+                //startTimer(onehour, display);
+            };
+            // Timer Ends
+
+            function save_review(id){
+            	number = id.split('s')[0];
+            	console.log(number)
+            	comments = document.getElementById(number+'review_text').value;
+            	review_texts[parseInt(number)-1]=comments;
+            	review_texts_string = review_texts.join("___");
+            	// review_texts_string = "___";
+            	console.log("inside save_review ",review_texts_string);
+                xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function(){
+                    if(this.readyState == 4 && this.status == 200){
+                        console.log("Comments added to server");
+                    }
+                }
+
+                xhr.onerror = function(e){
+                	console.log(e);
+                }
+                xhr.open("GET", "http://0.0.0.0:8000/add_review?comment=" + review_texts_string,true);
+                // xhr.open("GET", "http://0.0.0.0:8000/add_review",true);
+                xhr.send();
+
+            	// console.log(review_texts);
+            }
+
+            // Marks calculation begins
+            function display_answers() {
+                var marks = 0;
+                var user_answers = document.getElementById('answers_val').value;
+                var real_answers = document.getElementById('re_answers_val').value;
+				console.log(real_answers,user_answers);
+                var noOfQuestions = document.getElementById('noOfQuestions').value;
+                var x = Number(noOfQuestions);
+                console.log("Number of questions :",noOfQuestions);
+                var j=-1;
+                for (var i = 1; i < x + 1; i++) {
+                	j+=1;
+                	// console.log(actual_answer[j]);
+                	i_answer = user_answers[j];
+				  	if(document.getElementById(i + "correct_ans").value == document.getElementById(i + "user_ans").value){
+				  		document.getElementById(i + "user_ans").className = "label label-success";
+				  	}
+				  	else{
+				  		document.getElementById(i + "user_ans").className = "label label-danger";				  		
+				  	}
+                	switch(i_answer) {
+					  case "1":
+					  	document.getElementById(i + "A").checked = true;
+					  	document.getElementById(i + "user_ans").innerHTML = "Student answer : 1";
+					    // code block
+					    break;
+					  case "2":
+					  	document.getElementById(i + "B").checked = true;
+					  	document.getElementById(i + "user_ans").innerHTML = "Student answer : 2";				  	
+					    // code block
+					    break;
+					  case "3":
+					  	document.getElementById(i + "C").checked = true;
+					  	document.getElementById(i + "user_ans").innerHTML = "Student answer : 3";
+					    // code block
+					    break;
+					  case "4":
+					  	document.getElementById(i + "D").checked = true;
+					  	document.getElementById(i + "user_ans").innerHTML = "Student answer : 4";	
+					  	break;			  	
+					  default:
+					  	document.getElementById(i + "user_ans").innerHTML = "Student answer : -";
+
+					    // code block
+					} 
+					document.getElementById(i + "correct_ans").innerHTML = "Correct answer : "+real_answers[j];	
+					document.getElementById(i + "correct_ans").className = "label label-default";
+                    
+                }
+                // alert("Your Score - " + marks);
+                //document.getElementById('finalmarks').value = marks;
+                //1document.getElementById('finalanswers').value = answers;
+                //alert("Your Score is - " + marks);
+                //$("#formid").submit();
+            }
+        // Marks calculations Ends
+        </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" Async></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" Async integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    </div>
+</body>
+
+</html>
