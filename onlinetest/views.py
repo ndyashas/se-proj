@@ -94,19 +94,32 @@ def studentmarksGraphAnalysis(request):
         
 
 def testMarksGraph(request):
-	if(False):
+	try:
 		test_id = request.GET.get('test_id')
 		uid = request.session['user_id']
 		stuMarks = studentMark.objects.filter(client=uid).filter(ques_paper_id=test_id)
+
+		num_ques = 0
+		try:
+			num_ques = len(stuMarks[0].answers)
+		except:
+			pass
 
 		stuMarksDict = dict()
 
 		for i in stuMarks:
 			stuMarksDict[i.email] = i.marks
 
-		return render(request, 'onlinetest/studentgraphmarksdisp.html', {'client_id': client1, 'stuMarksDict': stuMarksDict, 'test_id':test_id})
-	else:
-		return HttpResponse("Under Construction")
+		return render(request, 
+			   		  'onlinetest/studentgraphmarksdisp.html',
+			   		  {'client_id': uid,
+					   'stuMarksDict': stuMarksDict,
+					   'test_id':test_id,
+					   'num_ques':num_ques})
+
+	except Exception as e:
+		print(e)
+		return HttpResponse("Something went wrong")
 
 
 def addtest(request):
