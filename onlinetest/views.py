@@ -416,13 +416,18 @@ def studentLogincheck(request):
 					user.client = user.client #+";"+log.cleaned_data.get('client').strip()
 					user.save()
 					# print("log ************",log.cleaned_data.get('client').strip())
+					if user.DoesNotExist:
+						messages.info(request,"Invalid User or Password")
+						return render(request, 'onlinetest/studentlogin.html')
 					try:
 						all_studentmark = studentMark.objects.get(studentid= user.id, ques_paper_id=test_id)
-						return HttpResponse("<center><h2>Test Already attempted</h2></center>")	
+						messages.info(request,"Test Already Attempted")
+						return render(request, 'onlinetest/studenthome.html')
 					except:
 						return HttpResponseRedirect(reverse('onlinetest:yourtest'))
 				except studentProfile.DoesNotExist:
-					return HttpResponse("<center><h2>Invalid Username or Password</h2></center>")
+					messages.info(request,"Invalid User or Password")
+					return render(request, 'onlinetest/studentlogin.html')
 	# except:
 		return HttpResponse("Something went wrong")
 
