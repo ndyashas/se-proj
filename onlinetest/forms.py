@@ -48,3 +48,8 @@ class CommentForms(forms.Form):
 class getClientReview(forms.Form):
     ques_paper_id = forms.CharField(max_length=20)
     student_id = forms.CharField(max_length=120)
+
+
+class saveCorrectedAnswers(forms.Form):
+    test_id = forms.CharField(max_length=20)
+    corrected_ans = forms.CharField(max_length=120)
