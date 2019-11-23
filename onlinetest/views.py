@@ -525,9 +525,10 @@ def yourtest(request):
 
 
 def update_scores(request):
-	if request.method == POST:
+	if request.method == 'POST':
 		test_id = request.POST.get('test_id')
-		question_numbers = request.GET.get('question_nos')
+		question_numbers = str(request.GET.get('question_nos'))
+		# print(question_numbers)
 		question_numbers = question_numbers.split('___')
 		new_answers = str(request.GET.get('answers'))
 		questions = question.objects.filter(question_id=test_id)
