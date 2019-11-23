@@ -145,6 +145,7 @@
 	        <div style="left:79%;bottom: 80px;" class="col-md-2" >
 	            <h2><form method="POST" action="{% url 'onlinetest:studentlogout' %}">
 	            	{% csrf_token %}
+                    <input id="comment_box" type="text" name="comments" hidden></input>
 	            	<button id="logout" class="label label-danger btn-md" type="submit" style="font-weight: bolder" >End Review
 	            </button>
 	        	</form>
@@ -190,29 +191,40 @@
             };
             // Timer Ends
 
+            // function save_review(id){
+            // 	number = id.split('s')[0];
+            // 	console.log(number)
+            // 	comments = document.getElementById(number+'review_text').value;
+            // 	review_texts[parseInt(number)-1]=comments;
+            // 	review_texts_string = review_texts.join("___");
+            // 	// review_texts_string = "___";
+            // 	console.log("inside save_review ",review_texts_string);
+            //     xhr = new XMLHttpRequest();
+            //     xhr.withCredentials = true;
+            //     xhr.onreadystatechange = function(){
+            //         if(this.readyState == 4 && this.status == 200){
+            //             console.log("Comments added to server");
+            //         }
+            //     }
+
+            //     // xhr.onerror = function(e){
+            //     // 	console.log(e);
+            //     // }
+
+            //     xhr.open("GET", "http://0.0.0.0:8000/add_review?comment=" + review_texts_string,true);
+            //     // xhr.open("GET", "http://0.0.0.0:8000/add_review",true);
+            //     xhr.send();
+
+            // 	// console.log(review_texts);
+            // }
             function save_review(id){
-            	number = id.split('s')[0];
-            	console.log(number)
-            	comments = document.getElementById(number+'review_text').value;
-            	review_texts[parseInt(number)-1]=comments;
-            	review_texts_string = review_texts.join("___");
-            	// review_texts_string = "___";
-            	console.log("inside save_review ",review_texts_string);
-                xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function(){
-                    if(this.readyState == 4 && this.status == 200){
-                        console.log("Comments added to server");
-                    }
-                }
-
-                xhr.onerror = function(e){
-                	console.log(e);
-                }
-                xhr.open("GET", "http://0.0.0.0:8000/add_review?comment=" + review_texts_string,true);
-                // xhr.open("GET", "http://0.0.0.0:8000/add_review",true);
-                xhr.send();
-
-            	// console.log(review_texts);
+                number = id.split('s')[0];
+                // console.log(number)
+                comments = document.getElementById(number+'review_text').value;
+                review_texts[parseInt(number)-1]=comments;
+                review_texts_string = review_texts.join("___");
+                var comment_box = document.getElementById("comment_box")
+                comment_box.value = review_texts_string
             }
 
             // Marks calculation begins
@@ -264,6 +276,10 @@
 					document.getElementById(i + "correct_ans").className = "label label-default";
                     
                 }
+
+                // var score_val = document.getElementById("score").value = score;
+
+
                 // alert("Your Score - " + marks);
                 //document.getElementById('finalmarks').value = marks;
                 //1document.getElementById('finalanswers').value = answers;

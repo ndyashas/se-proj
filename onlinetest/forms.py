@@ -41,3 +41,6 @@ class StudentRegForm(forms.Form):
 # for validating test ID
 class TestIdVal(forms.Form):
     test_id=forms.CharField(max_length = 250)
+
+class CommentForms(forms.Form):
+    comments=forms.CharField(max_length=3000)
