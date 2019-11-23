@@ -47,7 +47,7 @@
                         <input type="text" value="0" id="finalmarks" name="totalmarks" hidden>
 						<input type="text" value="E" id="finalanswers" name="answers" hidden>
                     </form>
-                    <h2><span class="label label-danger" type="button" value="Review" style="font-weight: bolder">Review</span></h2>
+                    <!-- <h2><span class="label label-danger" type="button" value="Review" style="font-weight: bolder">Review</span></h2> -->
                 </div>
                 
                 <div class="col-md-2" style="right:5%">
@@ -119,7 +119,7 @@
                                         {% else %} {% endif %}
                                     </div>
 
-                             		<div  class="col-md-3 form-group" style="display: flex;flex-direction:column;justify-content: center;align-items: center;border-left: solid 1px">
+                             		<!-- <div  class="col-md-3 form-group" style="display: flex;flex-direction:column;justify-content: center;align-items: center;border-left: solid 1px">
 
                              			 <div style="margin-bottom: 8px;font-weight: bolder">
                                         	REVIEW
@@ -130,7 +130,7 @@
 							        	<button class="btn btn-success" id="{{forloop.counter}}save_btn" type="button" onclick="save_review(this.id)" value="Save Review" style="font-weight: bolder;margin-top: 8px;width: 100%">Save Review</button>
 
 							        	
-							        </div>
+							        </div> -->
                                     <div class="col-md-2">
                                     </div>
                                 </div>
@@ -146,7 +146,7 @@
 	            <h2><form method="POST" action="{% url 'onlinetest:studentlogout' %}">
 	            	{% csrf_token %}
                     <input id="comment_box" type="text" name="comments" hidden></input>
-	            	<button id="logout" class="label label-danger btn-md" type="submit" style="font-weight: bolder" >End Review
+	            	<button id="logout" class="label label-danger btn-md" type="submit" style="font-weight: bolder" >End
 	            </button>
 	        	</form>
 	        </h2>
