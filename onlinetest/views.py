@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from .forms import clientRegisterForm, StudenLoginForm, saveMarks, TestIdVal, LoginForm, StudentRegForm, StudenLoginForm, savetestdetails, getClientReview, CommentForms
+from .forms import clientRegisterForm, StudenLoginForm, saveMarks, TestIdVal, LoginForm, StudentRegForm, StudenLoginForm, savetestdetails, getClientReview, CommentForms, saveCorrectedAnswers
 
 from django.views.decorators.csrf import csrf_protect
 # for older versoins of Django use:
@@ -537,7 +537,7 @@ def update_scores(request):
 			questions = question.objects.filter(question_id=test_id)
 			real_answers = questions.answer
 			print("New answers : ",new_answers)
-			
+
 			for i in range(len(real_answers)):
 				real_answers[i] = new_answers[i]
 
@@ -557,5 +557,7 @@ def update_scores(request):
 						marks+=1
 				all_objects[i].marks = marks
 			all_objects.save()
+			
+			return HttpResponse("This test doesn't exists anymore")
 
 
