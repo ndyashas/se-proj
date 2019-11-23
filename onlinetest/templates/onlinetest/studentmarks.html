@@ -58,7 +58,9 @@
                         <th> Review </th>
                     </tr>
                 </thead>
+                {% count = 0%}
                 {% for i in stuMarks %}
+                
                 <tr>
                     <td>{{ i.name }}</td>
                     <td>{{ i.email }}</td>
@@ -66,12 +68,13 @@
                     <td>{{ i.ques_paper_id }}</td>
                     <td>{{ i.marks }}</td>
                     <td>{{ i.date }}</td>
-                    { % if {{ flag }}== 1 %}
+                    { % if {{ flag[count] }}== 1 %}
                         <td><button type="submit" class="btn btn-success btn-xs"> Review Needed </button></td>
                     {% else %}
                         <td><button type="submit" class="btn btn-danger btn-xs"> Review not Needed </button></td>
 
                 </tr>
+                    {% count = count + 1 %}
                 {% endfor %}
             </table>
         </div>

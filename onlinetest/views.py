@@ -24,6 +24,7 @@ import time
 # for redirecting to home page
 
 def check_if_review_needed(stuMarks):
+	print(stuMarks)
 	comments=stuMarks.comments
 	comments=comments.split("___")
 	if len(comments)==0:
@@ -73,7 +74,8 @@ def studentmarksAnalysis(request):
 		stuMarks = studentMark.objects.filter(client=uid)
 		flag = check_if_review_needed(stuMarks)
 		return render(request, 'onlinetest/studentmarks.html', {'client_id': client1, 'stuMarks': stuMarks, 'flag': flag})
-	except:
+	except Exception as e:
+		print(e)
 		return HttpResponse("Something went wrong")
 
 def studentmarksGraphAnalysis(request):
