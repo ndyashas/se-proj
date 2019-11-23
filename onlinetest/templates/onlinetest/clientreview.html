@@ -154,7 +154,7 @@
 	            <h2><form method="POST" action="{% url 'onlinetest:update_scores' %}">
                     {% csrf_token %}
                     <input id="corrected_ans" type="text" name="corrected_ans" hidden></input>
-                    <input hidden id="test_id" type="text" name="test_id">{{testid}}</input>
+                    <input hidden id="test_id" type="text" name="test_id" value="{{testid}}"></input>
 	            	<button id="logout" class="label label-danger btn-md" type="submit" style="font-weight: bolder" >End Review
 	            </button>
 	        	</form>
