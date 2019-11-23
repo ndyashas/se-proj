@@ -126,8 +126,16 @@
                                         </div>
 
 							        	<textarea id="{{forloop.counter}}review_text" class="form-control" style="font-weight: bolder" placeholder="Enter your review here" rows=4 disabled></textarea>
-
-							        	<!-- <button class="btn btn-success" id="{{forloop.counter}}save_btn" type="button" onclick="save_review(this.id)" value="Save Review" style="font-weight: bolder;margin-top: 8px;width: 100%">Save Review</button> -->
+                                        <div>
+                                            <label for="{{forloop.counter}}changed_answer">Changed Answer:</label>
+                                            <select class="form-control" id="{{forloop.counter}}changed_answer">
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                              </select>
+                                        </div>
+							        	<button class="btn btn-success" id="{{forloop.counter}}save_ans_change" type="button" onclick="save_ans_change(this.id)" value="Save Ans Change" style="font-weight: bolder;margin-top: 8px;width: 100%">Save Answer Change</button>
 
 							        	
 							        </div>
@@ -143,8 +151,10 @@
             </div>
 
 	        <div style="left:79%;bottom: 80px;" class="col-md-2" >
-	            <h2><form method="POST" action="{% url 'onlinetest:studentlogout' %}">
-	            	{% csrf_token %}
+	            <h2><form method="POST" action="{% url 'onlinetest:update_scores' %}">
+                    {% csrf_token %}
+                    <input id="corrected_ans" type="text" name="corrected_ans" hidden></input>
+                    <input hidden id="test_id" type="text" name="test_id">{{testid}}</input>
 	            	<button id="logout" class="label label-danger btn-md" type="submit" style="font-weight: bolder" >End Review
 	            </button>
 	        	</form>
@@ -168,7 +178,7 @@
         </div>
         <script>
             // Timer begins
-            review_texts = [""]
+            correct_ans = [""]
             function startTimer(duration, display) {
                 var timer = duration, minutes, seconds;
                 setInterval(function () {
@@ -193,29 +203,15 @@
             };
             // Timer Ends
 
-            function save_review(id){
+            function save_ans_change(id){
             	number = id.split('s')[0];
             	console.log(number)
-            	comments = document.getElementById(number+'review_text').value;
-            	review_texts[parseInt(number)-1]=comments;
-            	review_texts_string = review_texts.join("___");
-            	// review_texts_string = "___";
-            	console.log("inside save_review ",review_texts_string);
-                xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function(){
-                    if(this.readyState == 4 && this.status == 200){
-                        console.log("Comments added to server");
-                    }
-                }
-
-                xhr.onerror = function(e){
-                	console.log(e);
-                }
-                xhr.open("GET", "http://0.0.0.0:8000/add_review?comment=" + review_texts_string,true);
-                // xhr.open("GET", "http://0.0.0.0:8000/add_review",true);
-                xhr.send();
-
+            	new_ans = document.getElementById(number+'changed_answer').value;
+            	correct_ans[parseInt(number)-1]=new_ans;
+            	correct_ans_string = correct_ans.join("___");
             	// console.log(review_texts);
+                var correct_ans_box = document.getElementById("corrected_ans")
+                correct_ans_box.value = correct_ans_string
             }
 
             // Marks calculation begins

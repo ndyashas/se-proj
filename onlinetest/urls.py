@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^add_review',views.add_review, name='add_review'),
     url(r'^client_review',views.client_review, name='client_review'),
     url(r'^studentseeanswers', views.studentseeanswers, name='studentseeanswers'),
+    url(r'^update_scores',views.update_scores, name='update_scores'),
 
 
     

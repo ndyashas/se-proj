@@ -11,7 +11,7 @@ class clientsTable(models.Model):
     contactNumber = models.CharField(max_length=15)
     pwd = models.CharField(max_length=80)
     date = models.DateTimeField(default=datetime.now, blank=True)
-    # client_id = models.CharField(max_length=100, blank=True)
+
     def __str__(self):
         return self.email
 
