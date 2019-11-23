@@ -126,8 +126,16 @@
                                         </div>
 
 							        	<textarea id="{{forloop.counter}}review_text" class="form-control" style="font-weight: bolder" placeholder="Enter your review here" rows=4 disabled></textarea>
-
-							        	<!-- <button class="btn btn-success" id="{{forloop.counter}}save_btn" type="button" onclick="save_review(this.id)" value="Save Review" style="font-weight: bolder;margin-top: 8px;width: 100%">Save Review</button> -->
+                                        <div>
+                                            <label for="{{forloop.counter}}changed_answer">Changed Answer:</label>
+                                            <select class="form-control" id="{{forloop.counter}}changed_answer">
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                              </select>
+                                        </div>
+							        	<button class="btn btn-success" id="{{forloop.counter}}save_ans_change" type="button" onclick="save__ans_change(this.id)" value="Save Ans Change" style="font-weight: bolder;margin-top: 8px;width: 100%">Save Answer Change</button>
 
 							        	
 							        </div>
