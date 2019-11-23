@@ -314,6 +314,27 @@ def studentreview(request):
 		print(e)
 		return HttpResponse("Something went wrong")
 
+def studentseeanswers(request):
+	try:
+		studentid = request.session['studentuid']
+		testid = request.session['test_id']
+		# user = studentMark.objects.get(pk=studentid)
+		ques = question.objects.filter(question_id=testid)
+		# print(testid)
+		user = studentMark.objects.filter(studentid=studentid).filter(ques_paper_id=testid)[0]
+		answers = user.answers
+		# re_answers = user.re_answers
+		re_answers = testDetails.objects.filter(test_id=testid)[0].re_answers
+		noOfQuestions = ques.count()
+		marks = user.marks
+		print(request.session)
+		return render(request, 'onlinetest/review1.html', {'studentid':studentid, 'testid':testid, 'user_id':user, 'ques':ques,'answers':answers,'re_answers':re_answers,'marks':marks, 'noOfQuestions': noOfQuestions })
+		
+		# return render(request, 'onlinetest/review.html', {'studentid':studentid, 'testid':testid, 'user':user, 'ques':ques })
+	except Exception as e:
+		print(e)
+		return HttpResponse("Something went wrong")		
+
 def add_review(request):
 		# print("inside add_review, comments : ",request.GET.get("comment"))
 	# try:
@@ -465,7 +486,7 @@ def studentLogincheck(request):
 					try:
 						all_studentmark = studentMark.objects.get(studentid= user.id, ques_paper_id=test_id)
 						messages.info(request,"Test Already Attempted")
-						return render(request, 'onlinetest/studentlogin.html')
+						return HttpResponseRedirect("/studentseeanswers")
 					except:
 						return HttpResponseRedirect(reverse('onlinetest:yourtest'))
 				except studentProfile.DoesNotExist:

@@ -39,7 +39,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-5">
-                                        <h2><span class="label label-primary"><b style="text-transform: uppercase">STUDENT -  {{ user_id.name}}</b></span></h2>
+                                        <h2><span class="label label-primary"><b style="text-transform: uppercase">WELCOME -  {{ user_id.name}}</b></span></h2>
                 	                </div>
                 <div class="col-md-5">
                     <form method="POST" id="formid" action="{% url 'onlinetest:paper_submit' %}">
@@ -47,7 +47,7 @@
                         <input type="text" value="0" id="finalmarks" name="totalmarks" hidden>
 						<input type="text" value="E" id="finalanswers" name="answers" hidden>
                     </form>
-                    <h2><span class="label label-danger" type="button" value="Review" style="font-weight: bolder">Review</span></h2>
+                    <!-- <h2><span class="label label-danger" type="button" value="Review" style="font-weight: bolder">Review</span></h2> -->
                 </div>
                 
                 <div class="col-md-2" style="right:5%">
@@ -119,26 +119,18 @@
                                         {% else %} {% endif %}
                                     </div>
 
-                             		<div  class="col-md-3 form-group" style="display: flex;flex-direction:column;justify-content: center;align-items: center;border-left: solid 1px">
+                             		<!-- <div  class="col-md-3 form-group" style="display: flex;flex-direction:column;justify-content: center;align-items: center;border-left: solid 1px">
 
                              			 <div style="margin-bottom: 8px;font-weight: bolder">
                                         	REVIEW
                                         </div>
 
-							        	<textarea id="{{forloop.counter}}review_text" class="form-control" style="font-weight: bolder" placeholder="Enter your review here" rows=4 disabled></textarea>
-                                        <div>
-                                            <label for="{{forloop.counter}}changed_answer">Changed Answer:</label>
-                                            <select class="form-control" id="{{forloop.counter}}changed_answer">
-                                                <option>1</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                                <option>4</option>
-                                              </select>
-                                        </div>
-							        	<button class="btn btn-success" id="{{forloop.counter}}save_ans_change" type="button" onclick="save_ans_change(this.id)" value="Save Ans Change" style="font-weight: bolder;margin-top: 8px;width: 100%">Save Answer Change</button>
+							        	<textarea id="{{forloop.counter}}review_text" class="form-control" style="font-weight: bolder" placeholder="Enter your review here" rows=4 ></textarea>
+
+							        	<button class="btn btn-success" id="{{forloop.counter}}save_btn" type="button" onclick="save_review(this.id)" value="Save Review" style="font-weight: bolder;margin-top: 8px;width: 100%">Save Review</button>
 
 							        	
-							        </div>
+							        </div> -->
                                     <div class="col-md-2">
                                     </div>
                                 </div>
@@ -151,11 +143,10 @@
             </div>
 
 	        <div style="left:79%;bottom: 80px;" class="col-md-2" >
-	            <h2><form method="POST" action="{% url 'onlinetest:update_scores' %}">
-                    {% csrf_token %}
-                    <input id="corrected_ans" type="text" name="corrected_ans" hidden></input>
-                    <input hidden id="test_id" type="text" name="test_id" value="{{testid}}"></input>
-	            	<button id="logout" class="label label-danger btn-md" type="submit" style="font-weight: bolder" >End Review
+	            <h2><form method="POST" action="{% url 'onlinetest:studentlogout' %}">
+	            	{% csrf_token %}
+                    <input id="comment_box" type="text" name="comments" hidden></input>
+	            	<button id="logout" class="label label-danger btn-md" type="submit" style="font-weight: bolder" >End
 	            </button>
 	        	</form>
 	        </h2>
@@ -169,16 +160,13 @@
 	        <div>
 	        	<input type="text" value={{ re_answers }} id="re_answers_val" name="user_answers" hidden>
 	        </div>
-            <div>
-	        	<input type="text" id="comments_val" name="comments_val" hidden value={{ user_id.comments }} >
-	        </div>
-            
+
 
 
         </div>
         <script>
             // Timer begins
-            correct_ans = [""]
+            review_texts = [""]
             function startTimer(duration, display) {
                 var timer = duration, minutes, seconds;
                 setInterval(function () {
@@ -203,15 +191,40 @@
             };
             // Timer Ends
 
-            function save_ans_change(id){
-            	number = id.split('s')[0];
-            	console.log(number)
-            	new_ans = document.getElementById(number+'changed_answer').value;
-            	correct_ans[parseInt(number)-1]=new_ans;
-            	correct_ans_string = correct_ans.join("___");
-            	// console.log(review_texts);
-                var correct_ans_box = document.getElementById("corrected_ans")
-                correct_ans_box.value = correct_ans_string
+            // function save_review(id){
+            // 	number = id.split('s')[0];
+            // 	console.log(number)
+            // 	comments = document.getElementById(number+'review_text').value;
+            // 	review_texts[parseInt(number)-1]=comments;
+            // 	review_texts_string = review_texts.join("___");
+            // 	// review_texts_string = "___";
+            // 	console.log("inside save_review ",review_texts_string);
+            //     xhr = new XMLHttpRequest();
+            //     xhr.withCredentials = true;
+            //     xhr.onreadystatechange = function(){
+            //         if(this.readyState == 4 && this.status == 200){
+            //             console.log("Comments added to server");
+            //         }
+            //     }
+
+            //     // xhr.onerror = function(e){
+            //     // 	console.log(e);
+            //     // }
+
+            //     xhr.open("GET", "http://0.0.0.0:8000/add_review?comment=" + review_texts_string,true);
+            //     // xhr.open("GET", "http://0.0.0.0:8000/add_review",true);
+            //     xhr.send();
+
+            // 	// console.log(review_texts);
+            // }
+            function save_review(id){
+                number = id.split('s')[0];
+                // console.log(number)
+                comments = document.getElementById(number+'review_text').value;
+                review_texts[parseInt(number)-1]=comments;
+                review_texts_string = review_texts.join("___");
+                var comment_box = document.getElementById("comment_box")
+                comment_box.value = review_texts_string
             }
 
             // Marks calculation begins
@@ -219,9 +232,7 @@
                 var marks = 0;
                 var user_answers = document.getElementById('answers_val').value;
                 var real_answers = document.getElementById('re_answers_val').value;
-                var comments = document.getElementById("comments_val").value;
-                comments = comments.split("___")
-				console.log(real_answers,user_answers,comments);
+				console.log(real_answers,user_answers);
                 var noOfQuestions = document.getElementById('noOfQuestions').value;
                 var x = Number(noOfQuestions);
                 console.log("Number of questions :",noOfQuestions);
@@ -239,34 +250,36 @@
                 	switch(i_answer) {
 					  case "1":
 					  	document.getElementById(i + "A").checked = true;
-					  	document.getElementById(i + "user_ans").innerHTML = "Student answer : 1";
+					  	document.getElementById(i + "user_ans").innerHTML = "Your answer : 1";
 					    // code block
 					    break;
 					  case "2":
 					  	document.getElementById(i + "B").checked = true;
-					  	document.getElementById(i + "user_ans").innerHTML = "Student answer : 2";				  	
+					  	document.getElementById(i + "user_ans").innerHTML = "Your answer : 2";				  	
 					    // code block
 					    break;
 					  case "3":
 					  	document.getElementById(i + "C").checked = true;
-					  	document.getElementById(i + "user_ans").innerHTML = "Student answer : 3";
+					  	document.getElementById(i + "user_ans").innerHTML = "Your answer : 3";
 					    // code block
 					    break;
 					  case "4":
 					  	document.getElementById(i + "D").checked = true;
-					  	document.getElementById(i + "user_ans").innerHTML = "Student answer : 4";	
+					  	document.getElementById(i + "user_ans").innerHTML = "Your answer : 4";	
 					  	break;			  	
 					  default:
-					  	document.getElementById(i + "user_ans").innerHTML = "Student answer : -";
+					  	document.getElementById(i + "user_ans").innerHTML = "Your answer : -";
 
 					    // code block
 					} 
 					document.getElementById(i + "correct_ans").innerHTML = "Correct answer : "+real_answers[j];	
 					document.getElementById(i + "correct_ans").className = "label label-default";
-                    if (i-1 < comments.length){
-                        document.getElementById(i + "review_text").innerHTML = comments[i-1];
-                    }
+                    
                 }
+
+                // var score_val = document.getElementById("score").value = score;
+
+
                 // alert("Your Score - " + marks);
                 //document.getElementById('finalmarks').value = marks;
                 //1document.getElementById('finalanswers').value = answers;
@@ -279,6 +292,13 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" Async integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
     </div>
+    {% if messages %}
+        {% for message in messages %}
+         {% if message.tags %}  <script>alert("{{ message }}")</script> {% endif %}
+
+        {% endfor %}
+
+    {% endif %}
 </body>
 
 </html>
