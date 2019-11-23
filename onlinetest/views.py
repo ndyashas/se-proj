@@ -520,8 +520,6 @@ def yourtest(request):
 
 
 def update_scores(request):
-	# try:
-	# 	if request.method == POST:
-	# 		# test_id = request.GET.get("testid")
-	# 		k = 1
-	k=1
+	if request.method == POST:
+		
+		students = studentMark.objects.filter(ques_paper_id=uid)
