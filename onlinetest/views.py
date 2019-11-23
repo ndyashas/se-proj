@@ -327,7 +327,7 @@ def studentseeanswers(request):
 		re_answers = testDetails.objects.filter(test_id=testid)[0].re_answers
 		noOfQuestions = ques.count()
 		marks = user.marks
-		print(request.session)
+		# print(request.session)
 		return render(request, 'onlinetest/review1.html', {'studentid':studentid, 'testid':testid, 'user_id':user, 'ques':ques,'answers':answers,'re_answers':re_answers,'marks':marks, 'noOfQuestions': noOfQuestions })
 		
 		# return render(request, 'onlinetest/review.html', {'studentid':studentid, 'testid':testid, 'user':user, 'ques':ques })
@@ -396,7 +396,7 @@ def client_review(request):
 	try:
 		if request.method == 'POST':
 			info = getClientReview(request.POST)
-			print(info)
+			# print(info)
 			if info.is_valid():
 				ques_paper_id = info.cleaned_data.get('ques_paper_id').strip()
 				student_id = info.cleaned_data.get('student_id').strip()
@@ -548,27 +548,43 @@ def yourtest(request):
 def update_scores(request):
 	if request.method == 'POST':
 		form_data = saveCorrectedAnswers(request.POST)
-		print(form_data)
+		# print(form_data)
 		if form_data.is_valid():
 
 			test_id = form_data.cleaned_data.get('test_id')
 			# question_numbers = str(request.POST.get('question_nos'))
 			# print(question_numbers,test_id)
 			# question_numbers = question_numbers.split('___')
-			new_answers = str(form_data.cleaned_data.get('corrected_answers'))
-			print("New answers : ",new_answers,test_id)
+			new_answers = form_data.cleaned_data.get('corrected_ans')
+			print("new ansers :",new_answers)
+			new_answers = new_answers.split("___")
+			# print(new_answers,len(new_answers))
+			# print("New answers : ",new_answers,test_id)
+			# print(new_answers.split("___"))
+			real_answers_object = testDetails.objects.filter(test_id=test_id)[0]
+			# print(real_answers_object,type(real_answers_object))
 
-			questions = question.objects.filter(question_id=test_id)
-			real_answers = questions.answer
+			real_answers = real_answers_object.re_answers
+			real_answers = list(real_answers)
+			# questions = question.objects.filter(question_id=test_id)
+			# print(questions)
+
+			# real_answers = questions.answer
 			
+			print(len(real_answers),len(new_answers),real_answers,new_answers)
+			for i in range(0,len(new_answers)):
+				if(new_answers[i]!=''):
+					real_answers[i] = new_answers[i]
 
-			for i in range(len(real_answers)):
-				real_answers[i] = new_answers[i]
+			real_answers = "".join(real_answers)
+			real_answers_object.re_answers = real_answers
+			# print(real_answers,type(real_answers_object))
 
+			real_answers_object.save()
 
 			# real_answers[int(request.GET.get('question_no'))-1] = str(request.GET.get('answer'))
-			questions.answer = real_answers
-			questions.save()
+			# questions.answer = real_answers
+			# questions.save()
 
 			all_objects = studentMark.objects.filter(ques_paper_id=test_id)
 			for i in range(len(all_objects)):
@@ -576,11 +592,12 @@ def update_scores(request):
 				# student = studentMark.objects.filter(studentid=student_id)
 				answers = all_objects[i].answers
 				marks = 0
-				for j in range(len(answers)):
+				print(len(answers),len(real_answers),answers,real_answers)
+				for j in range(0,len(answers)):
 					if(answers[j]==real_answers[j]):
 						marks+=1
 				all_objects[i].marks = marks
-			all_objects.save()
+				all_objects[i].save()
 		else:
 			return HttpResponse("FAILURE")
 

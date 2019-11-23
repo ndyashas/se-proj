@@ -166,7 +166,11 @@
         </div>
         <script>
             // Timer begins
-            review_texts = [""]
+            review_texts = []
+            no_of_ques = parseInt(document.getElementById('noOfQuestions').value);
+            for (var i = 0; i < no_of_ques; i++) {
+                review_texts.push("");
+            }
             function startTimer(duration, display) {
                 var timer = duration, minutes, seconds;
                 setInterval(function () {
