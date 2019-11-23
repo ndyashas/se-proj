@@ -1,8 +1,6 @@
 from django.test import TestCase
 import datetime
 from onlinetest.models import studentMark, studentProfile
-# Create your tests here.
-
 
 class testStudentModels(TestCase):
 	def setUp(self):
@@ -13,5 +11,5 @@ class testStudentModels(TestCase):
 			client = "client1", date = datetime.datetime.now(), answers = "12344", comments = "comment1___comment2")
 
 	def test_studentObjects(self):
-		self.assertEqual(studentMark.objects.get(studentid="std1")["client"], "client1")
-		self.assertEqual(studentProfile.objects.get(name="Student 1")["testtitle"], "test1")
+		self.assertEqual(studentMark.objects.get(studentid="st1").client, "client1")
+		self.assertEqual(studentProfile.objects.get(name="Student 1").name, "Student 1")
