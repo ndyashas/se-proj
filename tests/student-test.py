@@ -10,7 +10,7 @@ class testStudentModels(TestCase):
 			password = "pwd1", rollno = "number 1", client = "client1", date = datetime.datetime.now())
 		studentMark.objects.create( studentid = "st1", ques_paper_id = "paper1", marks = "12",
 			name = "Student 1", email = "fake-email@gmail.com", testtitle = "test1",
-			client = "client1", date = datetime.datetime.now(), )
+			client = "client1", date = datetime.datetime.now(), answers = "12344", comments = "comment1___comment2")
 
 	def testCreatedObjects(self):
 		self.assertEqual(studentMark.objects.get(studentid="std1").client, "client1")
