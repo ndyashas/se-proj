@@ -22,6 +22,7 @@ import random
 # from Crypto.cipher import AES
 import time
 # for redirecting to home page
+from django.contrib import messages
 
 def check_if_review_needed(stuMarks):
 	result = ""
@@ -379,10 +380,12 @@ def studentReg(request):
 				testfile_id = testDetails.objects.get(test_id=test_id)
 				request.session['test_id'] = test_id
 			except testDetails.DoesNotExist:
-				return HttpResponse("Invalid test ID")
+				messages.info(request,"Invalid Test-Id")
+				return HttpResponseRedirect('/studentlogin')
 			return render(request, 'onlinetest/studenthome.html', {'login_message':"", 'testid': testfile_id})
 	except:
-		return HttpResponse("Something went wrong")
+		messages.info(request,"Invalid Test-Id")
+		return HttpResponseRedirect('/studentlogin')
 
 # for validating student
 
