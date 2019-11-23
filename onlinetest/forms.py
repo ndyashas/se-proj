@@ -44,3 +44,7 @@ class TestIdVal(forms.Form):
 
 class CommentForms(forms.Form):
     comments=forms.CharField(max_length=3000)
+
+class getClientReview(forms.Form):
+    ques_paper_id = forms.CharField(max_length=20)
+    student_id = forms.CharField(max_length=120)

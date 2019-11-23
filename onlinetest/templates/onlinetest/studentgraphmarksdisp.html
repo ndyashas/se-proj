@@ -16,6 +16,92 @@
     <link href='https://fonts.googleapis.com/css?family=Sonsie+One' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="{% static 'onlinetest/css/style1.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'onlinetest/css/imagehover.min.css' %}" type="text/css" />
+
+    <script type="text/javascript">
+        
+        window.onload = function() {
+            data = {{ stuMarksDict|safe }};
+            num_ques = parseInt({{ num_ques }});
+
+            
+
+            _bins = {"0-10":0,
+                     "11-20":0,
+                     "21-30":0,
+                     "31-40":0,
+                     "41-50":0,
+                     "51-60":0,
+                     "61-70":0,
+                     "71-80":0,
+                     "81-90":0,
+                     "91-100":0}
+
+
+            for (i in data) {
+                _mark = parseInt(data[i]);
+
+                _mark = (_mark/num_ques)*100;
+
+                if (_mark <= 10) {
+                    _bins["0-10"] += 1;
+                }
+                else if (_mark <= 20) {
+                    _bins["11-20"] += 1;
+                }
+                else if (_mark <= 30) {
+                    _bins["21-30"] += 1;
+                }
+                else if (_mark <= 40) {
+                    _bins["31-40"] += 1;
+                }
+                else if (_mark <= 50) {
+                    _bins["41-50"] += 1;
+                }
+                else if (_mark <= 60) {
+                    _bins["51-60"] += 1;
+                }
+                else if (_mark <= 70) {
+                    _bins["61-70"] += 1;
+                }
+                else if (_mark <= 80) {
+                    _bins["71-80"] += 1;
+                }
+                else if (_mark <= 90) {
+                    _bins["81-90"] += 1;
+                }
+                else {
+                    _bins["91-100"] += 1;
+                }
+            }
+
+            _graphdata = [];
+            for (key in _bins) {
+                _graphdata.push({y: _bins[key], label:key});
+            }
+
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                animationEnabled: true,
+                theme: "light2",
+                title: {
+                    text: "Scores of students in {{ test_id }}"
+                },
+                axisY: {
+                    title: "Number of students",
+                    interval: 1
+                },
+                data: [{
+                    type: "column",
+                    showInLegend: true,
+                    legendMarkerColor: "grey",
+                    legendText: "% score in test",
+                    dataPoints: _graphdata
+                }]
+            })
+
+            chart.render();
+        }
+    </script>
 </head>
 
 <body style="height: 100%">
@@ -38,49 +124,13 @@
                 </div>
             </div>
         </nav>
-        <br>
         <div class="container" style="background: #fff;padding: 10px;border-radius:5px">
-            <br>
-            <br>
             <center>
-                <a href="#" class="btn btn-primary btn-lg"><b>STUDENT MARKS INFORMATION</b></a>
+                <div id="chartContainer" style="height: 500px; width: 80%;"></div>
             </center>
-            <br>
-            <table class="table table-striped" style="max-height: 400px;overflow: auto;border:5px solid #ccc">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Category </th>
-                        <th>Test ID</th>
-                        <th>Marks</th>
-                        <th>Date/Time</th>
-                        <th> Review </th>
-                    </tr>
-                </thead>
-                
-                {% for i in stuMarks %}
-                
-                <tr>
-                    <td>{{ i.name }}</td>
-                    <td>{{ i.email }}</td>
-                    <td>{{ i.testtitle }}</td>
-                    <td>{{ i.ques_paper_id }}</td>
-                    <td>{{ i.marks }}</td>
-                    <td>{{ i.date }}</td>
-                    <td>
-                    <form action="{% url 'onlinetest:client_review'%}" method="post" style="display: inline;">
-                        {% csrf_token %}
-                        <input name="ques_paper_id" value="{{ i.ques_paper_id }}" hidden/>
-                        <input name="student_id" value="{{ i.studentid }}" hidden/>
-                        <button type="submit" class="btn btn-primary btn-xs"> Review </button>
-                    </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
         </div>
     </div>
+
 
     <center>
         <footer id="footer" class="footer" style="padding: 17px 0">
@@ -93,6 +143,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" Async></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" Async integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </body>
 
 </html>

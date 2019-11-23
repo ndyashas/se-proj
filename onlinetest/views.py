@@ -8,7 +8,9 @@ from django.views import generic
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .forms import clientRegisterForm, StudenLoginForm, saveMarks, TestIdVal, LoginForm, StudentRegForm, StudenLoginForm, savetestdetails, CommentForms
+
+from .forms import clientRegisterForm, StudenLoginForm, saveMarks, TestIdVal, LoginForm, StudentRegForm, StudenLoginForm, savetestdetails, getClientReview, CommentForms
+
 from django.views.decorators.csrf import csrf_protect
 # for older versoins of Django use:
 # from django.core.urlresolvers import reverse
@@ -23,7 +25,19 @@ import random
 import time
 # for redirecting to home page
 
-
+def check_if_review_needed(stuMarks):
+	result = ""
+	for student in stuMarks:
+		comments = student.comments
+		comments = comments.split("___")
+		if len(comments)==0:
+			if comments[0]=="":
+				result+='0'
+			else:
+				result+='1'
+		else:
+			result+='1'
+	return result 
 
 def index(request):
 	try:
@@ -60,12 +74,15 @@ def clientlogin(request):
 
 
 def studentmarksAnalysis(request):
+	flag = 0
 	try:
 		uid = request.session['user_id']
 		client1 = clientsTable.objects.get(pk=uid)
 		stuMarks = studentMark.objects.filter(client=uid)
-		return render(request, 'onlinetest/studentmarks.html', {'client_id': client1, 'stuMarks': stuMarks})
-	except:
+		flag = check_if_review_needed(stuMarks)
+		return render(request, 'onlinetest/studentmarks.html', {'client_id': client1, 'stuMarks': stuMarks, 'flag': flag})
+	except Exception as e:
+		print(e)
 		return HttpResponse("Something went wrong")
 
 def studentmarksGraphAnalysis(request):
@@ -77,6 +94,35 @@ def studentmarksGraphAnalysis(request):
 	except:
 		return HttpResponse("Something went wrong")
         
+
+def testMarksGraph(request):
+	try:
+		test_id = request.GET.get('test_id')
+		uid = request.session['user_id']
+		stuMarks = studentMark.objects.filter(client=uid).filter(ques_paper_id=test_id)
+
+		num_ques = 0
+		try:
+			num_ques = len(stuMarks[0].answers)
+		except:
+			pass
+
+		stuMarksDict = dict()
+
+		for i in stuMarks:
+			stuMarksDict[i.email] = i.marks
+
+		return render(request, 
+			   		  'onlinetest/studentgraphmarksdisp.html',
+			   		  {'client_id': uid,
+					   'stuMarksDict': stuMarksDict,
+					   'test_id':test_id,
+					   'num_ques':num_ques})
+
+	except Exception as e:
+		print(e)
+		return HttpResponse("Something went wrong")
+
 
 def addtest(request):
 	try:
@@ -324,7 +370,28 @@ def paper_submit(request):
 		print(e)
 		return HttpResponse("Something went wrong")
 
+def client_review(request):
+	try:
+		if request.method == 'POST':
+			info = getClientReview(request.POST)
+			print(info)
+			if info.is_valid():
+				ques_paper_id = info.cleaned_data.get('ques_paper_id').strip()
+				student_id = info.cleaned_data.get('student_id').strip()
+				
+				ques = question.objects.filter(question_id = ques_paper_id)
 
+				user = studentMark.objects.filter(studentid = student_id).filter(ques_paper_id=ques_paper_id)[0]
+				answers = user.answers
+
+				re_answers = testDetails.objects.filter(test_id=ques_paper_id)[0].re_answers
+				noOfQuestions = ques.count()
+				marks = user.marks
+				return render(request, 'onlinetest/clientreview.html', {'studentid':student_id, 'testid':ques_paper_id, 'user_id':user, 'ques':ques,'answers':answers,'re_answers':re_answers,'marks':marks, 'noOfQuestions': noOfQuestions })
+
+	except Exception as e :
+		print(e)
+		return HttpResponse("Something went wrong")
 # for logout
 
 def clientlogout(request):
