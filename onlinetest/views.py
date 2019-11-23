@@ -525,6 +525,24 @@ def yourtest(request):
 
 
 def update_scores(request):
-	if request.method == POST:
-		
-		students = studentMark.objects.filter(ques_paper_id=uid)
+	if request.method == GET:
+		test_id = request.GET.get('test_id')
+		questions = question.objects.filter(question_id=test_id)
+		real_answers = questions.answer
+		real_answers[int(request.GET.get('question_no'))-1] = str(request.GET.get('answer'))
+		questions.answer = real_answers
+		questions.save()
+
+		all_objects = studentMark.objects.filter(ques_paper_id=test_id)
+		for i in range(len(all_objects)):
+			student_id = all_objects[i].studentid
+			# student = studentMark.objects.filter(studentid=student_id)
+			answers = all_objects[i].answers
+			marks = 0
+			for j in range(len(answers)):
+				if(answers[j]==real_answers[j])
+					marks+=1
+			all_objects[i].marks = marks
+		all_objects.save()
+
+
