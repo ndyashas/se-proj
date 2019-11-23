@@ -525,11 +525,19 @@ def yourtest(request):
 
 
 def update_scores(request):
-	if request.method == GET:
-		test_id = request.GET.get('test_id')
+	if request.method == 'POST':
+		test_id = request.POST.get('test_id')
+		question_numbers = str(request.GET.get('question_nos'))
+		# print(question_numbers)
+		question_numbers = question_numbers.split('___')
+		new_answers = str(request.GET.get('answers'))
 		questions = question.objects.filter(question_id=test_id)
 		real_answers = questions.answer
-		real_answers[int(request.GET.get('question_no'))-1] = str(request.GET.get('answer'))
+		for i in range(len(question_numbers)):
+			real_answers[question_numbers[i]-1] = real_answers[i]
+
+
+		# real_answers[int(request.GET.get('question_no'))-1] = str(request.GET.get('answer'))
 		questions.answer = real_answers
 		questions.save()
 
@@ -540,7 +548,7 @@ def update_scores(request):
 			answers = all_objects[i].answers
 			marks = 0
 			for j in range(len(answers)):
-				if(answers[j]==real_answers[j])
+				if(answers[j]==real_answers[j]):
 					marks+=1
 			all_objects[i].marks = marks
 		all_objects.save()
