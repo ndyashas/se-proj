@@ -28,6 +28,7 @@ class LoginForm(forms.Form):
 class StudenLoginForm(forms.Form):
     email = forms.CharField(max_length=120)
     password = forms.CharField(max_length=50)
+    client = forms.CharField(max_length=50)
 
 #for student registration
 class StudentRegForm(forms.Form):
