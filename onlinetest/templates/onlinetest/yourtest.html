@@ -140,49 +140,34 @@
             function submitTest() {
                 var marks = 0;
 				var answers = "";
-                var real_answers = "";
+                var real_answers = "sdasdsads";
                 var noOfQuestions = document.getElementById('noOfQuestions').value;
                 var x = Number(noOfQuestions);
                 // console.log("Number of questions :",noOfQuestions);
                 for (var i = 1; i < x + 1; i++) {
-                    switch(document.getElementById(i + "ANSWER").value)
-                    {
-                        case "1":
-                            real_answers+="A";
-                            break;
-                        case "2":
-                            real_answers+="B";
-                            break;
-                        case "3":
-                            real_answers+="C";
-                            break;                       
-                        case "4":
-                            real_answers+="D";
-                            break;
-                    }
                     if (document.getElementById(i + "A").checked) {
                         if (document.getElementById(i + "A").value == document.getElementById(i + "ANSWER").value)
                             marks++;
-						answers+="A";
+						answers+="1";
                     }
 					
 
                     else if (document.getElementById(i + "B").checked) {
                         if (document.getElementById(i + "B").value == document.getElementById(i + "ANSWER").value)
                             marks++;
-						answers+="B";
+						answers+="2";
                     }
                     else if (document.getElementById(i + "C").checked) {
                         if (document.getElementById(i + "C").value == document.getElementById(i + "ANSWER").value)
                             marks++;
-						answers+="C";
+						answers+="3";
                     }
                     else if (document.getElementById(i + "D").checked) {
                         if (document.getElementById(i + "D").value == document.getElementById(i + "ANSWER").value)
                             marks++;
-						answers+="D";
+						answers+="4";
                     }
-                    else { answers+="E"; }
+                    else { answers+="5"; }
 		
                 }
                 // console.log("yourtest answers :",answers);
@@ -191,7 +176,7 @@
                 document.getElementById('finalmarks').value = marks;
                 document.getElementById('finalanswers').value = answers;
                 document.getElementById('realanswers').value = real_answers;
-                alert("Your Score is - " + marks);
+                // alert("Your Score is - " + marks);
                 $("#formid").submit();
             }
         // Marks calculations Ends

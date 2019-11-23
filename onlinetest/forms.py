@@ -18,7 +18,6 @@ class savetestdetails(forms.Form):
 class saveMarks(forms.Form):
     totalmarks = forms.CharField(max_length=20)
     answers = forms.CharField(max_length=120)
-    re_answers = forms.CharField(max_length=120)
 	
 # for client login
 class LoginForm(forms.Form):

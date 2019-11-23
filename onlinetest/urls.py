@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^simple_upload', views.simple_upload, name='simple_upload'),
     url(r'^paper_submit$',views.paper_submit, name='paper_submit'),
 	url(r'^studentreview$',views.studentreview, name='studentreview'),
+    url(r'^add_review',views.add_review, name='add_review'),
+
 
     
 ]

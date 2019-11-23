@@ -22,6 +22,7 @@ class testDetails(models.Model):
     testtitle = models.CharField(max_length=250)
     testduration = models.CharField(max_length=30)
     date = models.DateTimeField(default=datetime.now, blank=True)
+    re_answers = models.CharField(max_length=120,default="E"*120)
 
     def __str__(self):
         return self.test_id
@@ -62,8 +63,8 @@ class studentMark(models.Model):
     client = models.CharField(max_length=50, default=None)
     date = models.DateTimeField(default=datetime.now, blank=True)
     
-    answers = models.CharField(max_length=120,default="E"*120)
-    re_answers = models.CharField(max_length=120,default="Z"*120)
+    answers = models.CharField(max_length=120,default="5"*120)
+    comments = models.CharField(max_length=3000,default="")
 
     def __str__(self):
         return self.email 

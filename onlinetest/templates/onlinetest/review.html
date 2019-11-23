@@ -47,14 +47,15 @@
                         <input type="text" value="0" id="finalmarks" name="totalmarks" hidden>
 						<input type="text" value="E" id="finalanswers" name="answers" hidden>
                     </form>
-                    <h2><span class="label label-success" type="button" onclick="submitTest()" value="Review" style="font-weight: bolder">Review</span></h2>
+                    <h2><span class="label label-danger" type="button" value="Review" style="font-weight: bolder">Review</span></h2>
                 </div>
                 
-                <div class="col-md-2">
-                    <div id="score" class="label label-primary" style="font-weight: bolder">Total : {{ marks }} / {{ noOfQuestions }}
-                    </div>
+                <div class="col-md-2" style="right:5%">
+                    <h2><span id="score" class="label label-primary" style="font-weight: bolder">Total : {{ marks }} / {{ noOfQuestions }}
+                    </span></h2>
                 </div>
             	
+
             </div>
         </div>
         <br>
@@ -66,8 +67,8 @@
                         {% for que in ques %}
                         <li>
                             <div class="container">
-                                <div class="row">
-                                    <div class="col-md-12">
+                                <div class="row" style="display: flex;flex-wrap: wrap;">
+                                    <div class="col-md-7">
                                         <button type="button" class="btn btn-primary"><b>Question - {{forloop.counter}}</b></button>
                                         <br>
                                         <br>
@@ -104,25 +105,51 @@
                                             </div>
                                         </div>
 
+
                                         <div>
-								        	<input id="{{forloop.counter}}user_ans">
+								        	<h3><span id="{{forloop.counter}}user_ans" style="font-weight: bolder;float:left;width:200px"></span></h3>
+								        </div>
+								        <br>
+								        <div>
+								        	<h3><span id="{{forloop.counter}}correct_ans" style="font-weight: bolder;float:left;width:200px"></span></h3>
 								        </div>
 
-								        <div>
-								        	<input id="{{forloop.counter}}correct_ans">
-								        </div>
+
 
                                         {% else %} {% endif %}
                                     </div>
-                                    <div class="col-md-3">
+
+                             		<div  class="col-md-3 form-group" style="display: flex;flex-direction:column;justify-content: center;align-items: center;border-left: solid 1px">
+
+                             			 <div style="margin-bottom: 8px;font-weight: bolder">
+                                        	REVIEW
+                                        </div>
+
+							        	<textarea id="{{forloop.counter}}review_text" class="form-control" style="font-weight: bolder" placeholder="Enter your review here" rows=4></textarea>
+
+							        	<button class="btn btn-success" id="{{forloop.counter}}save_btn" type="button" onclick="save_review(this.id)" value="Save Review" style="font-weight: bolder;margin-top: 8px;width: 100%">Save Review</button>
+
+							        	
+							        </div>
+                                    <div class="col-md-2">
                                     </div>
                                 </div>
                             </div>
                         </li>
                         {% endfor %}
                     </ul>
+
                 </div>
             </div>
+
+	        <div style="left:79%;bottom: 80px;" class="col-md-2" >
+	            <h2><form method="POST" action="{% url 'onlinetest:studentlogout' %}">
+	            	{% csrf_token %}
+	            	<button id="logout" class="label label-danger btn-md" type="submit" style="font-weight: bolder" >End Review
+	            </button>
+	        	</form>
+	        </h2>
+	        </div>
 
 
 	        <div>
@@ -138,6 +165,7 @@
         </div>
         <script>
             // Timer begins
+            review_texts = [""]
             function startTimer(duration, display) {
                 var timer = duration, minutes, seconds;
                 setInterval(function () {
@@ -151,10 +179,7 @@
                     }
                 }, 1000);
             }
-            function display_answers(){
-            	console.log("1");
-            	
-            }
+            
 
             window.onload = function () {
                 var testduration = document.getElementById('testduration1').value;
@@ -165,12 +190,37 @@
             };
             // Timer Ends
 
+            function save_review(id){
+            	number = id.split('s')[0];
+            	console.log(number)
+            	comments = document.getElementById(number+'review_text').value;
+            	review_texts[parseInt(number)-1]=comments;
+            	review_texts_string = review_texts.join("___");
+            	// review_texts_string = "___";
+            	console.log("inside save_review ",review_texts_string);
+                xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function(){
+                    if(this.readyState == 4 && this.status == 200){
+                        console.log("Comments added to server");
+                    }
+                }
+
+                xhr.onerror = function(e){
+                	console.log(e);
+                }
+                xhr.open("GET", "http://0.0.0.0:8000/add_review?comment=" + review_texts_string,true);
+                // xhr.open("GET", "http://0.0.0.0:8000/add_review",true);
+                xhr.send();
+
+            	// console.log(review_texts);
+            }
+
             // Marks calculation begins
             function display_answers() {
                 var marks = 0;
                 var user_answers = document.getElementById('answers_val').value;
                 var real_answers = document.getElementById('re_answers_val').value;
-				// console.log(real_answers);
+				console.log(real_answers,user_answers);
                 var noOfQuestions = document.getElementById('noOfQuestions').value;
                 var x = Number(noOfQuestions);
                 console.log("Number of questions :",noOfQuestions);
@@ -179,32 +229,39 @@
                 	j+=1;
                 	// console.log(actual_answer[j]);
                 	i_answer = user_answers[j];
+				  	if(document.getElementById(i + "correct_ans").value == document.getElementById(i + "user_ans").value){
+				  		document.getElementById(i + "user_ans").className = "label label-success";
+				  	}
+				  	else{
+				  		document.getElementById(i + "user_ans").className = "label label-danger";				  		
+				  	}
                 	switch(i_answer) {
-					  case "A":
+					  case "1":
 					  	document.getElementById(i + "A").checked = true;
-					  	document.getElementById(i + "user_ans").value = "Your answer : A";
+					  	document.getElementById(i + "user_ans").innerHTML = "Your answer : 1";
 					    // code block
 					    break;
-					  case "B":
+					  case "2":
 					  	document.getElementById(i + "B").checked = true;
-					  	document.getElementById(i + "user_ans").value = "Your answer : B";				  	
+					  	document.getElementById(i + "user_ans").innerHTML = "Your answer : 2";				  	
 					    // code block
 					    break;
-					  case "C":
+					  case "3":
 					  	document.getElementById(i + "C").checked = true;
-					  	document.getElementById(i + "user_ans").value = "Your answer : C";
+					  	document.getElementById(i + "user_ans").innerHTML = "Your answer : 3";
 					    // code block
 					    break;
-					  case "D":
+					  case "4":
 					  	document.getElementById(i + "D").checked = true;
-					  	document.getElementById(i + "user_ans").value = "Your answer : D";	
+					  	document.getElementById(i + "user_ans").innerHTML = "Your answer : 4";	
 					  	break;			  	
 					  default:
-					  	document.getElementById(i + "user_ans").value = "Your answer : -";
+					  	document.getElementById(i + "user_ans").innerHTML = "Your answer : -";
 
 					    // code block
 					} 
-					document.getElementById(i + "correct_ans").value = "Correct answer : "+real_answers[j];	
+					document.getElementById(i + "correct_ans").innerHTML = "Correct answer : "+real_answers[j];	
+					document.getElementById(i + "correct_ans").className = "label label-default";
                     
                 }
                 // alert("Your Score - " + marks);
