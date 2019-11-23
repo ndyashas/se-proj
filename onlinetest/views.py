@@ -20,10 +20,16 @@ import onlinetest.file_reader
 from django.utils.timezone import datetime
 import random
 # from Crypto.cipher import AES
-
+import time
 # for redirecting to home page
 
-
+def check_if_review_needed(stuMarks):
+	comments=stuMarks.comments
+	comments=comments.split("___")
+	if len(comments)==0:
+		if comments[0]=="":
+			return 0
+	return 1
 
 def index(request):
 	try:
@@ -80,6 +86,22 @@ def studentmarksGraphAnalysis(request):
 		return HttpResponse("Something went wrong")
         
 
+def testMarksGraph(request):
+	if(False):
+		test_id = request.GET.get('test_id')
+		uid = request.session['user_id']
+		stuMarks = studentMark.objects.filter(client=uid).filter(ques_paper_id=test_id)
+
+		stuMarksDict = dict()
+
+		for i in stuMarks:
+			stuMarksDict[i.email] = i.marks
+
+		return render(request, 'onlinetest/studentgraphmarksdisp.html', {'client_id': client1, 'stuMarksDict': stuMarksDict, 'test_id':test_id})
+	else:
+		return HttpResponse("Under Construction")
+
+
 def addtest(request):
 	try:
 		uid = request.session['user_id']
@@ -93,7 +115,8 @@ def studentInfo(request):
 	try:
 		uid = request.session['user_id']
 		client1 = clientsTable.objects.get(pk=uid)
-		stuInfo = studentProfile.objects.filter(client=uid)
+		stuInfo = studentMark.objects.filter(client=uid)
+		# print(stuInfo,client1,uid)
 		return render(request, 'onlinetest/studentinfo.html', {'client_id': client1, 'stuInfo': stuInfo})
 	except:
 		return HttpResponse("Something went wrong")
@@ -175,6 +198,7 @@ def adminhome(request):
 					)
 					p.save()
 					request.session['user_id'] = p.id
+					# print("*********************************",p.id)
 				except clientsTable.DoesNotExist:
 					return HttpResponse("Email already registered")
 		return HttpResponseRedirect(reverse('onlinetest:home'))
@@ -360,7 +384,7 @@ def studentReg(request):
 
 
 def studentLogincheck(request):
-	try:
+	# try:
 		if request.method == 'POST':
 			log = StudenLoginForm(request.POST)
 			if log.is_valid():
@@ -369,7 +393,9 @@ def studentLogincheck(request):
 													  password=log.cleaned_data.get('password').strip())
 					request.session['studentuid'] = user.id
 					test_id = request.session.get('test_id')
-					
+					user.client = user.client #+";"+log.cleaned_data.get('client').strip()
+					user.save()
+					# print("log ************",log.cleaned_data.get('client').strip())
 					try:
 						all_studentmark = studentMark.objects.get(studentid= user.id, ques_paper_id=test_id)
 						return HttpResponse("<center><h2>Test Already attempted</h2></center>")	
@@ -377,7 +403,7 @@ def studentLogincheck(request):
 						return HttpResponseRedirect(reverse('onlinetest:yourtest'))
 				except studentProfile.DoesNotExist:
 					return HttpResponse("<center><h2>Invalid Username or Password</h2></center>")
-	except:
+	# except:
 		return HttpResponse("Something went wrong")
 
 # for student registration
@@ -387,6 +413,7 @@ def studentRegSave(request):
 	try:
 		if request.method == 'POST':
 			addstudent = StudentRegForm(request.POST)
+			# print(addstudent)
 			if addstudent.is_valid():
 				emailcheck = studentProfile.objects.filter(
 					email=addstudent.cleaned_data.get('email').strip())
@@ -402,6 +429,7 @@ def studentRegSave(request):
 						client=addstudent.cleaned_data.get('client').strip(),
 					)
 					p.save()
+					# print(addstudent.cleaned_data.get('client').strip())
 					request.session['studentuid'] = p.id
 		return HttpResponseRedirect(reverse('onlinetest:yourtest'))
 	except:
