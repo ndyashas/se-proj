@@ -60,11 +60,13 @@ def clientlogin(request):
 
 
 def studentmarksAnalysis(request):
+	flag = 0
 	try:
 		uid = request.session['user_id']
 		client1 = clientsTable.objects.get(pk=uid)
 		stuMarks = studentMark.objects.filter(client=uid)
-		return render(request, 'onlinetest/studentmarks.html', {'client_id': client1, 'stuMarks': stuMarks})
+		flag = check_if_review_needed(stuMarks)
+		return render(request, 'onlinetest/studentmarks.html', {'client_id': client1, 'stuMarks': stuMarks, 'flag': flag})
 	except:
 		return HttpResponse("Something went wrong")
 
