@@ -23,7 +23,13 @@ import random
 import time
 # for redirecting to home page
 
-
+def check_if_review_needed(stuMarks):
+	comments=stuMarks.comments
+	comments=comments.split("___")
+	if len(comments)==0:
+		if comments[0]=="":
+			return 0
+	return 1
 
 def index(request):
 	try:
