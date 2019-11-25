@@ -405,7 +405,7 @@ def client_review(request):
 
 				user = studentMark.objects.filter(studentid = student_id).filter(ques_paper_id=ques_paper_id)[0]
 				answers = user.answers
-
+				# print("**********",user.comments)
 				re_answers = testDetails.objects.filter(test_id=ques_paper_id)[0].re_answers
 				noOfQuestions = ques.count()
 				marks = user.marks

@@ -169,10 +169,12 @@
 	        <div>
 	        	<input type="text" value={{ re_answers }} id="re_answers_val" name="user_answers" hidden>
 	        </div>
-            <div>
+            <p id="comments_val" hidden> {{ user_id.comments }} </p>
+
+ <!--            <div>
 	        	<input type="text" id="comments_val" name="comments_val" hidden value={{ user_id.comments }} >
 	        </div>
-            
+             -->
 
 
         </div>
@@ -224,7 +226,8 @@
                 var marks = 0;
                 var user_answers = document.getElementById('answers_val').value;
                 var real_answers = document.getElementById('re_answers_val').value;
-                var comments = document.getElementById("comments_val").value;
+                var comments = document.getElementById("comments_val").innerHTML;
+                // console.log(comments);
                 comments = comments.split("___")
 				console.log(real_answers,user_answers,comments);
                 var noOfQuestions = document.getElementById('noOfQuestions').value;
