@@ -556,7 +556,7 @@ def update_scores(request):
 			# print(question_numbers,test_id)
 			# question_numbers = question_numbers.split('___')
 			new_answers = form_data.cleaned_data.get('corrected_ans')
-			print("new ansers :",new_answers)
+			#print("new ansers :",new_answers)
 			new_answers = new_answers.split("___")
 			# print(new_answers,len(new_answers))
 			# print("New answers : ",new_answers,test_id)
@@ -571,7 +571,7 @@ def update_scores(request):
 
 			# real_answers = questions.answer
 			
-			print(len(real_answers),len(new_answers),real_answers,new_answers)
+			#print(len(real_answers),len(new_answers),real_answers,new_answers)
 			for i in range(0,len(new_answers)):
 				if(new_answers[i]!=''):
 					real_answers[i] = new_answers[i]
@@ -592,15 +592,15 @@ def update_scores(request):
 				# student = studentMark.objects.filter(studentid=student_id)
 				answers = all_objects[i].answers
 				marks = 0
-				print(len(answers),len(real_answers),answers,real_answers)
+				#print(len(answers),len(real_answers),answers,real_answers)
 				for j in range(0,len(answers)):
 					if(answers[j]==real_answers[j]):
 						marks+=1
 				all_objects[i].marks = marks
 				all_objects[i].save()
 		else:
-			return HttpResponse("FAILURE")
+			return HttpResponseRedirect(reverse('onlinetest:home'))
 
-		return HttpResponse("SUCCESS")
+		return HttpResponseRedirect(reverse('onlinetest:home'))
 
 
